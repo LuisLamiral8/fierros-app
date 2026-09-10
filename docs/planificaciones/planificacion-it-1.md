@@ -92,8 +92,8 @@ mesociclos viejos quedan guardados para cuando haya histórico y progresión.
 poner a mano en `filesDir`:
 
 ```
-adb push datos/rutina.json /sdcard/
-adb shell run-as com.luis.fierros cp /sdcard/rutina.json files/
+adb push datos/rutina.json /data/local/tmp/
+adb shell run-as com.luis.fierros cp /data/local/tmp/rutina.json files/
 ```
 
 Sirve para separar los dos problemas nuevos: si la pantalla sale vacía, saber
@@ -114,7 +114,8 @@ automática entre series, que es de la iteración 2 en adelante.
 
 Restricción dura: 40mm. Una pantalla = un ejercicio.
 
-- Compose for Wear OS, `ScalingLazyColumn`, scroll con bisel táctil.
+- Compose for Wear OS con Material 3, como trae la plantilla:
+  `TransformingLazyColumn` dentro de `ScreenScaffold`, scroll con bisel táctil.
 - Jerarquía: semana + día → lista de ejercicios → ejercicio.
 - Pantalla de ejercicio: letra y nombre grandes arriba; series, reps y peso
   debajo; la nota, si hay, al final.

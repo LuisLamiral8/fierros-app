@@ -81,7 +81,7 @@ usadas.
 ### Iteración 1
 
 - [ ] Resolver el sideload por ADB Wi-Fi, antes de escribir código.
-- [ ] Crear el proyecto (Kotlin + Compose for Wear OS).
+- [x] Crear el proyecto (Kotlin + Compose for Wear OS).
 - [ ] Parsear `rutina.json` puesto a mano en `filesDir`.
 - [ ] Selector de semana y día.
 - [ ] Lista de ejercicios del día.
