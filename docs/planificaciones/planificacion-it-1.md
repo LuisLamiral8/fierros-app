@@ -50,7 +50,7 @@ que van por pierna.
 {
   "semanas": [
     { "numero": 1, "dias": [
-      { "numero": 1, "ejercicios": [
+      { "numero": 1, "nombre": "Full Body", "ejercicios": [
         { "letra": "A", "nombre": "Sentadilla", "series": 4, "reps": "10-8-6", "peso": "0 kg", "nota": null },
         { "letra": "E1", "nombre": "Estocadas", "series": 3, "reps": "12", "peso": "0 kg", "nota": "por pierna" }
       ]}
@@ -66,6 +66,10 @@ que van por pierna.
 - **`peso` va en "0 kg" en esta iteración**: el campo existe en el esquema pero
   todavía no se maneja. Se completa de verdad a partir de la iteración 2.
 - `nota`: aclaraciones sueltas ("por pierna"), o `null`.
+- `nombre` del día: "Full Body", "Tren superior"... Mynter no lo muestra, así
+  que lo deduce el LLM a partir de los ejercicios al convertir. En la app es
+  opcional: con nombre, la lista muestra "Día 1" en negrita a la izquierda y
+  "Full Body" a la derecha; sin nombre, solo "Día 1".
 - Los datos se repiten por semana en vez de agrupar "un ejercicio con 4
   valores". Duplica información, pero el JSON lo arma un LLM o se tipea una vez,
   y a cambio la UI queda trivial y aguanta que una semana cambie un ejercicio.

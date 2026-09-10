@@ -22,6 +22,7 @@ data class Semana(
 @Serializable
 data class Dia(
     val numero: Int,
+    val nombre: String? = null,
     val ejercicios: List<Ejercicio>,
 )
 

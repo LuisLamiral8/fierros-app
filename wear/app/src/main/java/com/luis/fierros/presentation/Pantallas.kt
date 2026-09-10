@@ -4,12 +4,15 @@ import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.TransformingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
@@ -30,6 +33,9 @@ import com.luis.fierros.R
 import com.luis.fierros.data.Ejercicio
 import com.luis.fierros.presentation.theme.FierrosTheme
 
+/** Un botón de la lista. La [etiqueta] (la letra del ejercicio) va en su propia columna. */
+data class Opcion(val texto: String, val etiqueta: String? = null)
+
 /**
  * Lista con título y un botón por opción. La usan semanas, días, ejercicios y ajustes.
  * Si se pasa [onAjustes], abajo de todo aparece la tuerquita.
@@ -37,7 +43,8 @@ import com.luis.fierros.presentation.theme.FierrosTheme
 @Composable
 fun PantallaLista(
     titulo: String,
-    opciones: List<String> = emptyList(),
+    opciones: List<Opcion> = emptyList(),
+    anchoEtiqueta: Dp = 36.dp,
     mensaje: String? = null,
     onClick: (indice: Int) -> Unit = {},
     onAjustes: (() -> Unit)? = null,
@@ -71,7 +78,15 @@ fun PantallaLista(
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
                 ) {
-                    Text(opciones[indice])
+                    val opcion = opciones[indice]
+                    if (opcion.etiqueta != null) {
+                        Text(
+                            text = opcion.etiqueta,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.width(anchoEtiqueta),
+                        )
+                    }
+                    Text(opcion.texto, modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -144,7 +159,11 @@ fun PantallaListaPreview() {
     FierrosTheme {
         PantallaLista(
             titulo = "Semana 1 · Día 2",
-            opciones = listOf("A1  Band pull apart", "A2  Puente de glúteos a una pierna", "B  Press militar con barra"),
+            opciones = listOf(
+                Opcion("Band pull apart", etiqueta = "A1"),
+                Opcion("Puente de glúteos a una pierna", etiqueta = "A2"),
+                Opcion("Press militar con barra", etiqueta = "B"),
+            ),
         )
     }
 }

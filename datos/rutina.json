@@ -5,6 +5,7 @@
       "dias": [
         {
           "numero": 1,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -58,6 +59,7 @@
         },
         {
           "numero": 2,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -119,6 +121,7 @@
         },
         {
           "numero": 3,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -180,6 +183,7 @@
         },
         {
           "numero": 4,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -254,6 +258,7 @@
       "dias": [
         {
           "numero": 1,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -307,6 +312,7 @@
         },
         {
           "numero": 2,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -368,6 +374,7 @@
         },
         {
           "numero": 3,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -429,6 +436,7 @@
         },
         {
           "numero": 4,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -503,6 +511,7 @@
       "dias": [
         {
           "numero": 1,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -556,6 +565,7 @@
         },
         {
           "numero": 2,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -617,6 +627,7 @@
         },
         {
           "numero": 3,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -678,6 +689,7 @@
         },
         {
           "numero": 4,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -752,6 +764,7 @@
       "dias": [
         {
           "numero": 1,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -805,6 +818,7 @@
         },
         {
           "numero": 2,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -866,6 +880,7 @@
         },
         {
           "numero": 3,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",
@@ -927,6 +942,7 @@
         },
         {
           "numero": 4,
+          "nombre": "Full Body",
           "ejercicios": [
             {
               "letra": "A1",

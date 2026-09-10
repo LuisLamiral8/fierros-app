@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.wear.compose.material3.AppScaffold
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
@@ -50,7 +51,7 @@ private fun Navegacion(mesociclo: Mesociclo) {
         composable("semanas") {
             PantallaLista(
                 titulo = stringResource(R.string.semanas),
-                opciones = mesociclo.semanas.map { stringResource(R.string.semana, it.numero) },
+                opciones = mesociclo.semanas.map { Opcion(stringResource(R.string.semana, it.numero)) },
                 onClick = { i -> navController.navigate("dias/${mesociclo.semanas[i].numero}") },
                 onAjustes = { navController.navigate("ajustes") },
             )
@@ -59,7 +60,7 @@ private fun Navegacion(mesociclo: Mesociclo) {
         composable("ajustes") {
             PantallaLista(
                 titulo = stringResource(R.string.ajustes),
-                opciones = listOf(stringResource(R.string.sincronizar_datos)),
+                opciones = listOf(Opcion(stringResource(R.string.sincronizar_datos))),
                 onClick = { /* Sync: GET a la API del homelab, próximo paso */ },
             )
         }
@@ -71,7 +72,11 @@ private fun Navegacion(mesociclo: Mesociclo) {
             } else {
                 PantallaLista(
                     titulo = stringResource(R.string.semana, semana.numero),
-                    opciones = semana.dias.map { stringResource(R.string.dia, it.numero) },
+                    opciones = semana.dias.map { dia ->
+                        val numero = stringResource(R.string.dia, dia.numero)
+                        if (dia.nombre == null) Opcion(numero) else Opcion(dia.nombre, etiqueta = numero)
+                    },
+                    anchoEtiqueta = 60.dp,
                     onClick = { i ->
                         navController.navigate("ejercicios/${semana.numero}/${semana.dias[i].numero}")
                     },
@@ -87,7 +92,7 @@ private fun Navegacion(mesociclo: Mesociclo) {
             } else {
                 PantallaLista(
                     titulo = stringResource(R.string.titulo_dia, semana.numero, dia.numero),
-                    opciones = dia.ejercicios.map { "${it.letra}  ${it.nombre}" },
+                    opciones = dia.ejercicios.map { Opcion(it.nombre, etiqueta = it.letra) },
                     onClick = { i -> navController.navigate("ejercicio/${semana.numero}/${dia.numero}/$i") },
                 )
             }

@@ -10,6 +10,7 @@ formato exacto de abajo, que después carga una app de mi reloj.
 - Cada día está dividido en bloques ("BLOQUE 1", "BLOQUE 2"...). Un bloque puede
   tener un solo ejercicio o varios, marcados con el cartel "Superserie".
 - **Mynter no muestra letras.** Las letras las asignás vos (ver reglas).
+- **Mynter tampoco muestra el nombre del día.** También lo asignás vos.
 - Por lo general, entre semanas solo cambian los pesos; series y reps se
   mantienen.
 
@@ -19,7 +20,7 @@ formato exacto de abajo, que después carga una app de mi reloj.
 {
   "semanas": [
     { "numero": 1, "dias": [
-      { "numero": 1, "ejercicios": [
+      { "numero": 1, "nombre": "Full Body", "ejercicios": [
         { "letra": "A1", "nombre": "Band pull apart", "series": 3, "reps": "20", "peso": "0 kg", "nota": null },
         { "letra": "A2", "nombre": "Puente de glúteos a una pierna", "series": 3, "reps": "20", "peso": "0 kg", "nota": "por pierna" },
         { "letra": "B", "nombre": "Press militar con barra", "series": 5, "reps": "12-10", "peso": "0 kg", "nota": null }
@@ -53,6 +54,11 @@ formato exacto de abajo, que después carga una app de mi reloj.
   no es un descendente: va con la regla de letras de arriba.
 - **Orden:** semanas y días numerados del 1 al 4; los ejercicios en el mismo
   orden que en Mynter.
+- **Nombre del día:** Mynter no lo muestra, así que lo deducís vos a partir de
+  los ejercicios del día. Tiene que ser un nombre corto, de 1 a 3 palabras, que
+  entre en la pantalla del reloj: "Full Body", "Tren superior", "Tren
+  inferior", "Empuje", "Tirón". Si te digo los nombres, usá esos. Un mismo día
+  lleva el mismo nombre en todas las semanas. Nunca `null`.
 
 ## Semanas
 
@@ -83,5 +89,6 @@ son a propósito:
    descargable `rutina.json`; si no, en un único bloque de código.
 2. Debajo, un resumen corto:
    - la cantidad de ejercicios por día;
+   - el nombre que le pusiste a cada día y en qué te basaste;
    - las semanas replicadas, si hubo;
    - las lecturas dudosas para verificar.
