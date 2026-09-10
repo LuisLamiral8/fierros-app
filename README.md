@@ -82,10 +82,11 @@ usadas.
 
 - [ ] Resolver el sideload por ADB Wi-Fi, antes de escribir código.
 - [x] Crear el proyecto (Kotlin + Compose for Wear OS).
-- [ ] Parsear `rutina.json` puesto a mano en `filesDir`.
-- [ ] Selector de semana y día.
-- [ ] Lista de ejercicios del día.
-- [ ] Pantalla de ejercicio y navegación entre ejercicios.
+- [x] Parsear `rutina.json` puesto a mano en `filesDir`.
+- [x] Selector de semana y día (navegación por niveles: semanas → días).
+- [x] Lista de ejercicios del día.
+- [x] Pantalla de ejercicio.
+- [ ] Navegación entre ejercicios (pasar al siguiente sin volver a la lista).
 - [ ] Estado vacío cuando nunca sincronizó.
 - [ ] Recordar la pantalla exacta (semana, día y ejercicio) y volver ahí al
       abrir la app.

@@ -116,7 +116,8 @@ Restricción dura: 40mm. Una pantalla = un ejercicio.
 
 - Compose for Wear OS con Material 3, como trae la plantilla:
   `TransformingLazyColumn` dentro de `ScreenScaffold`, scroll con bisel táctil.
-- Jerarquía: semana + día → lista de ejercicios → ejercicio.
+- Jerarquía por niveles: semanas → días → lista de ejercicios → ejercicio.
+  Volver es deslizar hacia la derecha, como en todo Wear OS.
 - Pantalla de ejercicio: letra y nombre grandes arriba; series, reps y peso
   debajo; la nota, si hay, al final.
 
@@ -165,7 +166,8 @@ muestra datos equivocados.
 - Semana y día los elijo yo; no se calculan desde una fecha.
 - Sincronizar pisa la rutina actual; la anterior pasa a `historial/`.
 - Superseries como ejercicios sueltos.
-- Selector de semana dentro del alcance.
+- Selector de semana dentro del alcance, como navegación por niveles
+  (semanas → días), no como pantalla de inicio combinada.
 - Sync manual con botón.
 - API en Node, la que ya está corriendo en el homelab.
 - Ingeniería inversa de la API de Mynter: descartada.
