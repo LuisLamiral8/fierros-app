@@ -17,7 +17,6 @@ formato exacto de abajo, que después carga una app de mi reloj.
 
 ```json
 {
-  "nombre": "Mesociclo septiembre 2026",
   "semanas": [
     { "numero": 1, "dias": [
       { "numero": 1, "ejercicios": [
@@ -54,8 +53,6 @@ formato exacto de abajo, que después carga una app de mi reloj.
   no es un descendente: va con la regla de letras de arriba.
 - **Orden:** semanas y días numerados del 1 al 4; los ejercicios en el mismo
   orden que en Mynter.
-- **Nombre del mesociclo:** "Mesociclo" + mes y año de la fecha del plan que
-  muestra Mynter, salvo que te diga otro.
 
 ## Semanas
 

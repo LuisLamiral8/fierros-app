@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Mesociclo(
-    val nombre: String,
     val semanas: List<Semana>,
 ) {
     fun semana(numero: Int?): Semana? = semanas.firstOrNull { it.numero == numero }

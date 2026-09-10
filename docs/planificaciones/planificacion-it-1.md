@@ -48,7 +48,6 @@ que van por pierna.
 
 ```json
 {
-  "nombre": "Mesociclo sept-oct",
   "semanas": [
     { "numero": 1, "dias": [
       { "numero": 1, "ejercicios": [

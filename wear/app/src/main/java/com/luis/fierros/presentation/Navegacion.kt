@@ -49,7 +49,7 @@ private fun Navegacion(mesociclo: Mesociclo) {
     SwipeDismissableNavHost(navController = navController, startDestination = "semanas") {
         composable("semanas") {
             PantallaLista(
-                titulo = mesociclo.nombre,
+                titulo = stringResource(R.string.semanas),
                 opciones = mesociclo.semanas.map { stringResource(R.string.semana, it.numero) },
                 onClick = { i -> navController.navigate("dias/${mesociclo.semanas[i].numero}") },
                 onAjustes = { navController.navigate("ajustes") },

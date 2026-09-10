@@ -3,6 +3,7 @@
     <string name="cargando">Cargando…</string>
     <string name="sin_rutina">No hay rutina guardada. Sincronizá desde casa.</string>
     <string name="no_encontrado">No se encontró en la rutina.</string>
+    <string name="semanas">Semanas</string>
     <string name="semana">Semana %1$d</string>
     <string name="dia">Día %1$d</string>
     <string name="titulo_dia">Semana %1$d · Día %2$d</string>
