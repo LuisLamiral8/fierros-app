@@ -60,7 +60,8 @@ que van por pierna.
 }
 ```
 
-- `letra`: la de Mynter, tal cual (A, B, E1, E2...).
+- `letra`: Mynter no la muestra; se asigna al convertir, una por bloque en orden
+  de aparición (A, B...), con número en las superseries (A1, A2).
 - `reps` y `peso` son strings. El peso admite cosas como "peso corporal" o
   "12 kg c/mano".
 - **`peso` va en "0 kg" en esta iteración**: el campo existe en el esquema pero
@@ -91,8 +92,8 @@ mesociclos viejos quedan guardados para cuando haya histórico y progresión.
 poner a mano en `filesDir`:
 
 ```
-adb push rutina.json /sdcard/
-adb shell run-as <package> cp /sdcard/rutina.json files/
+adb push datos/rutina.json /sdcard/
+adb shell run-as com.luis.fierros cp /sdcard/rutina.json files/
 ```
 
 Sirve para separar los dos problemas nuevos: si la pantalla sale vacía, saber
@@ -100,9 +101,10 @@ si el que falla es el layout o el cliente HTTP.
 
 ## 4. Modelo
 
-Mesociclo de 4 semanas × 4 días. Ejercicios identificados por letra. Las letras
-con número (E1, E2, E3) son superseries; la misma letra repetida con menos peso
-es serie descendente.
+Mesociclo de 4 semanas × 4 días. En Mynter cada día se divide en bloques, y un
+bloque con varios ejercicios es una superserie. Al convertir, cada bloque recibe
+una letra por orden de aparición; los ejercicios de una superserie llevan
+además un número (A1, A2), aunque sea el mismo ejercicio repetido.
 
 **Superseries: no se modelan como grupo.** Son ejercicios sueltos en la lista,
 con la letra visible. El agrupamiento recién importa cuando haya navegación

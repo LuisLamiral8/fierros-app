@@ -1,0 +1,1001 @@
+{
+  "nombre": "Mesociclo septiembre 2026",
+  "semanas": [
+    {
+      "numero": 1,
+      "dias": [
+        {
+          "numero": 1,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Dislocaciones con banda",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de gluteos isometrico + pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Db floor press",
+              "series": 5,
+              "reps": "20-12-10-8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "remo seal con barra",
+              "series": 4,
+              "reps": "12-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "trap bar deadlift",
+              "series": 4,
+              "reps": "15-20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "caminata con trap bar",
+              "series": 4,
+              "reps": "20 PASOS",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Band pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de glúteos a una pierna",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            },
+            {
+              "letra": "B",
+              "nombre": "Press militar con barra",
+              "series": 5,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Press plano con pausa 1\"",
+              "series": 3,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D1",
+              "nombre": "Sentadilla Hack",
+              "series": 4,
+              "reps": "10-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D2",
+              "nombre": "Sentadilla Hack",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "sillon de cuadriceps a una pierna",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Face pull parado",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sentadilla Goblet",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Remo con barra / Bent over row",
+              "series": 5,
+              "reps": "12-10-8-6-4",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Curl de Biceps en Banco Scott con Barra Z",
+              "series": 3,
+              "reps": "10-12",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "Vuelos frontales neutro",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Vuelos Laterales en Maquina",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "caminata del granjero con DB",
+              "series": 5,
+              "reps": "ida y vuelta",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Press McGill en banco plano",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sillon de Cuadriceps",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Sentadilla zercher a cajon",
+              "series": 4,
+              "reps": "8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "press vertical a un brazo parado",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por lado"
+            },
+            {
+              "letra": "D",
+              "nombre": "Flexiones skullcrushers",
+              "series": 3,
+              "reps": "fallo",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Jalon al pecho neutro",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "Press CONVERGENTE",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "G",
+              "nombre": "Isquios Parado Maquina",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "dias": [
+        {
+          "numero": 1,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Dislocaciones con banda",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de gluteos isometrico + pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Db floor press",
+              "series": 5,
+              "reps": "20-12-10-8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "remo seal con barra",
+              "series": 4,
+              "reps": "12-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "trap bar deadlift",
+              "series": 4,
+              "reps": "15-20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "caminata con trap bar",
+              "series": 4,
+              "reps": "20 PASOS",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Band pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de glúteos a una pierna",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            },
+            {
+              "letra": "B",
+              "nombre": "Press militar con barra",
+              "series": 5,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Press plano con pausa 1\"",
+              "series": 3,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D1",
+              "nombre": "Sentadilla Hack",
+              "series": 4,
+              "reps": "10-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D2",
+              "nombre": "Sentadilla Hack",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "sillon de cuadriceps a una pierna",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Face pull parado",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sentadilla Goblet",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Remo con barra / Bent over row",
+              "series": 5,
+              "reps": "12-10-8-6-4",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Curl de Biceps en Banco Scott con Barra Z",
+              "series": 3,
+              "reps": "10-12",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "Vuelos frontales neutro",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Vuelos Laterales en Maquina",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "caminata del granjero con DB",
+              "series": 5,
+              "reps": "ida y vuelta",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Press McGill en banco plano",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sillon de Cuadriceps",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Sentadilla zercher a cajon",
+              "series": 4,
+              "reps": "8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "press vertical a un brazo parado",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por lado"
+            },
+            {
+              "letra": "D",
+              "nombre": "Flexiones skullcrushers",
+              "series": 3,
+              "reps": "fallo",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Jalon al pecho neutro",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "Press CONVERGENTE",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "G",
+              "nombre": "Isquios Parado Maquina",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "dias": [
+        {
+          "numero": 1,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Dislocaciones con banda",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de gluteos isometrico + pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Db floor press",
+              "series": 5,
+              "reps": "20-12-10-8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "remo seal con barra",
+              "series": 4,
+              "reps": "12-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "trap bar deadlift",
+              "series": 4,
+              "reps": "15-20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "caminata con trap bar",
+              "series": 4,
+              "reps": "20 PASOS",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Band pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de glúteos a una pierna",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            },
+            {
+              "letra": "B",
+              "nombre": "Press militar con barra",
+              "series": 5,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Press plano con pausa 1\"",
+              "series": 3,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D1",
+              "nombre": "Sentadilla Hack",
+              "series": 4,
+              "reps": "10-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D2",
+              "nombre": "Sentadilla Hack",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "sillon de cuadriceps a una pierna",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Face pull parado",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sentadilla Goblet",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Remo con barra / Bent over row",
+              "series": 5,
+              "reps": "12-10-8-6-4",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Curl de Biceps en Banco Scott con Barra Z",
+              "series": 3,
+              "reps": "10-12",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "Vuelos frontales neutro",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Vuelos Laterales en Maquina",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "caminata del granjero con DB",
+              "series": 5,
+              "reps": "ida y vuelta",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Press McGill en banco plano",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sillon de Cuadriceps",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Sentadilla zercher a cajon",
+              "series": 4,
+              "reps": "8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "press vertical a un brazo parado",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por lado"
+            },
+            {
+              "letra": "D",
+              "nombre": "Flexiones skullcrushers",
+              "series": 3,
+              "reps": "fallo",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Jalon al pecho neutro",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "Press CONVERGENTE",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "G",
+              "nombre": "Isquios Parado Maquina",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "dias": [
+        {
+          "numero": 1,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Dislocaciones con banda",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de gluteos isometrico + pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Db floor press",
+              "series": 5,
+              "reps": "20-12-10-8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "remo seal con barra",
+              "series": 4,
+              "reps": "12-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "trap bar deadlift",
+              "series": 4,
+              "reps": "15-20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "caminata con trap bar",
+              "series": 4,
+              "reps": "20 PASOS",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 2,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Band pull apart",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Puente de glúteos a una pierna",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            },
+            {
+              "letra": "B",
+              "nombre": "Press militar con barra",
+              "series": 5,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Press plano con pausa 1\"",
+              "series": 3,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D1",
+              "nombre": "Sentadilla Hack",
+              "series": 4,
+              "reps": "10-8",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D2",
+              "nombre": "Sentadilla Hack",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "sillon de cuadriceps a una pierna",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            }
+          ]
+        },
+        {
+          "numero": 3,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Face pull parado",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sentadilla Goblet",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Remo con barra / Bent over row",
+              "series": 5,
+              "reps": "12-10-8-6-4",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "Curl de Biceps en Banco Scott con Barra Z",
+              "series": 3,
+              "reps": "10-12",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "D",
+              "nombre": "Vuelos frontales neutro",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Vuelos Laterales en Maquina",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "caminata del granjero con DB",
+              "series": 5,
+              "reps": "ida y vuelta",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        },
+        {
+          "numero": 4,
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Press McGill en banco plano",
+              "series": 2,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Sillon de Cuadriceps",
+              "series": 3,
+              "reps": "20",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Sentadilla zercher a cajon",
+              "series": 4,
+              "reps": "8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "C",
+              "nombre": "press vertical a un brazo parado",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por lado"
+            },
+            {
+              "letra": "D",
+              "nombre": "Flexiones skullcrushers",
+              "series": 3,
+              "reps": "fallo",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "E",
+              "nombre": "Jalon al pecho neutro",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "F",
+              "nombre": "Press CONVERGENTE",
+              "series": 3,
+              "reps": "12-10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "G",
+              "nombre": "Isquios Parado Maquina",
+              "series": 10,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

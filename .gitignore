@@ -1,0 +1,9 @@
+# Configuración local de Claude Code
+.claude/settings.local.json
+
+# Android Studio / IntelliJ si se abre la raíz
+/.idea/
+
+# Windows
+Thumbs.db
+desktop.ini
