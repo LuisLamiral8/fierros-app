@@ -2,7 +2,11 @@ package com.luis.fierros.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -98,11 +102,24 @@ private fun Navegacion(mesociclo: Mesociclo) {
             }
         }
 
+        // Las flechas cambian de ejercicio dentro de esta misma pantalla, sin apilar rutas:
+        // deslizar atrás siempre vuelve a la lista del día. Nunca pasan a otro día.
         composable("ejercicio/{semana}/{dia}/{indice}") { entry ->
-            val ejercicio = mesociclo.semana(entry.int("semana"))
-                ?.dia(entry.int("dia"))
-                ?.ejercicios?.getOrNull(entry.int("indice") ?: -1)
-            if (ejercicio == null) NoEncontrado() else PantallaEjercicio(ejercicio)
+            val ejercicios = mesociclo.semana(entry.int("semana"))?.dia(entry.int("dia"))?.ejercicios
+            val inicial = entry.int("indice")
+            if (ejercicios == null || inicial == null || inicial !in ejercicios.indices) {
+                NoEncontrado()
+            } else {
+                var indice by rememberSaveable { mutableIntStateOf(inicial) }
+                // key: al cambiar de ejercicio la pantalla arranca de cero (scroll arriba).
+                key(indice) {
+                    PantallaEjercicio(
+                        ejercicio = ejercicios[indice],
+                        onAnterior = if (indice > 0) ({ indice -= 1 }) else null,
+                        onSiguiente = if (indice < ejercicios.lastIndex) ({ indice += 1 }) else null,
+                    )
+                }
+            }
         }
     }
 }

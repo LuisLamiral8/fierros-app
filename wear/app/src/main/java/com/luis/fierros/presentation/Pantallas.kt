@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +22,7 @@ import androidx.wear.compose.foundation.lazy.rememberTransformingLazyColumnState
 import androidx.wear.compose.material3.Button
 import androidx.wear.compose.material3.EdgeButton
 import androidx.wear.compose.material3.EdgeButtonSize
+import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.ListHeader
 import androidx.wear.compose.material3.MaterialTheme
@@ -107,12 +111,28 @@ fun PantallaLista(
     }
 }
 
-/** Una pantalla = un ejercicio: letra, nombre grande, series × reps, peso y nota. */
+/**
+ * Una pantalla = un ejercicio: letra, nombre grande, series × reps, peso y nota.
+ * Flechas a los costados para anterior/siguiente; si el callback es null, la flecha no aparece.
+ */
 @Composable
-fun PantallaEjercicio(ejercicio: Ejercicio) {
+fun PantallaEjercicio(
+    ejercicio: Ejercicio,
+    onAnterior: (() -> Unit)? = null,
+    onSiguiente: (() -> Unit)? = null,
+) {
     val listState = rememberTransformingLazyColumnState()
     ScreenScaffold(scrollState = listState) { contentPadding ->
-        TransformingLazyColumn(contentPadding = contentPadding, state = listState) {
+        TransformingLazyColumn(
+            // Márgenes laterales propios para que el texto no quede debajo de las flechas.
+            contentPadding = PaddingValues(
+                start = 36.dp,
+                end = 36.dp,
+                top = contentPadding.calculateTopPadding(),
+                bottom = contentPadding.calculateBottomPadding(),
+            ),
+            state = listState,
+        ) {
             item {
                 Text(
                     text = ejercicio.letra,
@@ -123,9 +143,9 @@ fun PantallaEjercicio(ejercicio: Ejercicio) {
             item {
                 Text(
                     text = ejercicio.nombre,
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
             item {
@@ -147,6 +167,17 @@ fun PantallaEjercicio(ejercicio: Ejercicio) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
+            }
+        }
+
+        onAnterior?.let {
+            IconButton(onClick = it, modifier = Modifier.align(Alignment.CenterStart)) {
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = stringResource(R.string.anterior))
+            }
+        }
+        onSiguiente?.let {
+            IconButton(onClick = it, modifier = Modifier.align(Alignment.CenterEnd)) {
+                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.siguiente))
             }
         }
     }
@@ -172,6 +203,10 @@ fun PantallaListaPreview() {
 @Composable
 fun PantallaEjercicioPreview() {
     FierrosTheme {
-        PantallaEjercicio(Ejercicio("A2", "Puente de glúteos a una pierna", 3, "20", "0 kg", "por pierna"))
+        PantallaEjercicio(
+            Ejercicio("A2", "Puente de glúteos a una pierna", 3, "20", "0 kg", "por pierna"),
+            onAnterior = {},
+            onSiguiente = {},
+        )
     }
 }

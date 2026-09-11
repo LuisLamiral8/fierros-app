@@ -123,6 +123,9 @@ Restricción dura: 40mm. Una pantalla = un ejercicio.
   Volver es deslizar hacia la derecha, como en todo Wear OS.
 - Pantalla de ejercicio: letra y nombre grandes arriba; series, reps y peso
   debajo; la nota, si hay, al final.
+- Flechas a los costados de la pantalla de ejercicio para ir al anterior o al
+  siguiente, solo dentro del mismo día: en el primero no hay flecha izquierda y
+  en el último no hay derecha. Deslizar atrás vuelve siempre a la lista del día.
 
 **La semana y el día los elijo yo**, no se calculan desde una fecha de inicio.
 Un cálculo automático se rompe apenas falto una semana o el entrenador corre

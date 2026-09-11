@@ -86,7 +86,7 @@ usadas.
 - [x] Selector de semana y día (navegación por niveles: semanas → días).
 - [x] Lista de ejercicios del día.
 - [x] Pantalla de ejercicio.
-- [ ] Navegación entre ejercicios (pasar al siguiente sin volver a la lista).
+- [x] Navegación entre ejercicios (pasar al siguiente sin volver a la lista).
 - [ ] Estado vacío cuando nunca sincronizó.
 - [ ] Recordar la pantalla exacta (semana, día y ejercicio) y volver ahí al
       abrir la app.
@@ -96,6 +96,10 @@ usadas.
 
 ### Iteración 2
 
+- [ ] Mejorar cómo se ven las series × reps largas en la pantalla de ejercicio:
+      hoy "5 × 20-12-10-8-6" se corta en "20-12-10-8 / -6". Ya se probó
+      achicar la letra automáticamente para que entre en un renglón, y se
+      descartó porque no gustó.
 - [ ] Registrar el peso levantado, uno por ejercicio.
 - [ ] Empezar a cargar el peso real en el JSON (hoy va en "0 kg").
 - [ ] Sincronizar los registros a la API.
