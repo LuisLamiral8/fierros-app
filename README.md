@@ -76,6 +76,80 @@ ver lo registrado en formato copiable a la hora de volcarlo a Mynter.
 Nada de esto se decide hasta que las tres primeras iteraciones estén andando y
 usadas.
 
+## Instalar y actualizar en el reloj
+
+La app se instala por ADB (sideload). Queda instalada como cualquier otra: aparece
+en la lista de apps, funciona sin la PC y anda offline. No se actualiza sola: cada
+versión nueva se instala de la misma forma desde esta PC.
+
+### Lo que hace falta en la PC
+
+- `adb` en el `PATH` (está en `E:\Android\Sdk\platform-tools`).
+- En `wear/local.properties`, la URL por defecto de la API:
+  `api.url.defecto=http://<ip-del-servidor>:3000`. Sin esa línea no compila.
+- El reloj y la PC en el mismo Wi-Fi.
+
+### Una sola vez: preparar el reloj y emparejarlo
+
+1. **Opciones de desarrollador:** en el reloj, Ajustes → Información del reloj →
+   Información de software → tocar **Versión de software** 5 veces, hasta que
+   avise que se activaron. Los nombres pueden variar un poco según la versión.
+2. En **Ajustes → Opciones de desarrollador**, activar **Depuración ADB** y
+   **Depuración inalámbrica**.
+3. Entrar a **Depuración inalámbrica → Vincular dispositivo nuevo**. El reloj
+   muestra una IP:puerto de vinculación y un código de 6 dígitos (vence rápido).
+4. En la PC:
+
+   ```powershell
+   adb pair <ip>:<puerto-de-vinculacion> <codigo>
+   ```
+
+   Tiene que responder `Successfully paired`. El emparejamiento queda guardado.
+
+### Cada vez que se instala o actualiza
+
+1. En el reloj, entrar a **Depuración inalámbrica** (si se apagó, activarla).
+   Arriba muestra la **IP:puerto** para conectar. Es un puerto distinto al de
+   vinculación y cambia cada vez que se activa.
+2. Conectar y comprobar que aparece:
+
+   ```powershell
+   adb connect <ip>:<puerto>
+   adb devices          # tiene que listar <ip>:<puerto>  device
+   ```
+
+3. Compilar la versión nueva:
+
+   ```powershell
+   cd wear
+   .\gradlew.bat assembleDebug
+   ```
+
+   El APK queda en `wear\app\build\outputs\apk\debug\app-debug.apk`.
+4. Instalar (o actualizar) en el reloj:
+
+   ```powershell
+   adb -s <ip>:<puerto> install -r app\build\outputs\apk\debug\app-debug.apk
+   ```
+
+   `-r` reemplaza la versión anterior y **conserva los datos**: la rutina y la URL
+   del servidor guardadas. `-s` elige el reloj si también está el emulador
+   conectado.
+5. Abrir **Fierros** desde la lista de apps del reloj.
+6. Opcional: apagar **Depuración inalámbrica** para ahorrar batería. La app sigue
+   instalada.
+
+Alternativa desde Android Studio: con el reloj conectado (paso 2), elegirlo en el
+selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
+
+### Si algo falla
+
+| Síntoma | Qué pasa y qué hacer |
+|---|---|
+| `failed to connect` en `adb connect` | El puerto cambió, el reloj no está en el mismo Wi-Fi o se apagó la depuración inalámbrica (se apaga sola al perder el Wi-Fi). Volver a mirar la IP:puerto en el reloj. |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | La versión instalada se firmó en otra PC. `adb -s <ip>:<puerto> uninstall com.luis.fierros` y volver a instalar. Se pierden la rutina y la URL guardadas: se vuelve a sincronizar. |
+| La sincronización falla en el reloj | Ver el motivo real con `adb -s <ip>:<puerto> logcat -s Fierros`. |
+
 ## ToDo
 
 ### Iteración 1
@@ -88,14 +162,12 @@ usadas.
 - [x] Pantalla de ejercicio.
 - [x] Navegación entre ejercicios (pasar al siguiente sin volver a la lista).
 - [x] Estado vacío cuando nunca sincronizó (ofrece sincronizar desde ahí).
-- [ ] Recordar la pantalla exacta (semana, día y ejercicio) y volver ahí al
-      abrir la app.
 - [x] API: `GET` y `POST /fierros/rutina` con historial y log, desplegada en el
       homelab y con la rutina cargada.
 - [x] Sync con botón: GET, `network_security_config.xml`, guardado atómico y
       rutina anterior a `historial/`. Detalle en
       [`planificacion-conectar-api.md`](docs/planificaciones/planificacion-conectar-api.md).
-- [ ] URL del servidor editable desde Ajustes (la IP del homelab no es fija).
+- [x] URL del servidor editable desde Ajustes (la IP del homelab no es fija).
 - [ ] Dos semanas de uso real en el gimnasio.
 
 ### Iteración 2
@@ -113,6 +185,15 @@ usadas.
 
 - [ ] Web mínima en el homelab para cargar y corregir rutinas.
 - [ ] Vista de lo registrado en formato copiable para volcar a Mynter.
+
+### Posibles mejoras (sin compromiso)
+
+- [ ] Recordar dónde quedé (semana, día y ejercicio) y volver ahí al abrir la
+      app, solo por unas horas para no arrancar un día nuevo en el ejercicio del
+      anterior. Descartado por ahora; mientras tanto ayuda activar en el reloj la
+      opción de mostrar la última app al levantar la muñeca.
+- [ ] Validar el puerto de la URL del servidor (un número del 1 al 65535). Hoy
+      "192.168.1.57:abc" se acepta y recién falla al sincronizar.
 
 ## Contexto
 
