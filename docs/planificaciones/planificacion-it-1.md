@@ -1,5 +1,8 @@
 # Iteración 1 — Visualizador
 
+**Estado:** desarrollo cerrado el 2026-09-11. La app está instalada en el Watch8
+y sincroniza con la API del homelab. Falta la validación: dos semanas de uso real
+en el gimnasio (ver sección 9).
 
 ## 1. Objetivo
 
@@ -18,6 +21,8 @@ Ver la rutina del día en el reloj, offline. Solo lectura.
 - Pantalla de ejercicio individual: nombre, series, reps, peso.
 - Navegación entre ejercicios.
 - Estado vacío: si nunca sincronizó, la app lo dice y ofrece sincronizar.
+- Ajustes: sincronizar y cambiar el servidor. La URL se puede editar desde el
+  reloj porque la IP del homelab no es fija (agregado durante la iteración).
 
 **Fuera:**
 
@@ -82,7 +87,7 @@ un LLM — es un atajo manual, no una integración, y da lo mismo cuál se use.
 **Sincronizar pisa la rutina guardada, sin perder la anterior:**
 
 1. GET a la API.
-2. Parsear el JSON. Si falla, no se toca nada y la app muestra el error.
+2. Parsear el JSON. Si falla, no se toca nada y la app lo avisa.
 3. Escribir el JSON nuevo a un archivo temporal.
 4. Copiar la rutina actual a `historial/`, con fecha y hora en el nombre
    (`rutina-AAAA-MM-DD-HHmmss.json`), para que dos sincronizaciones del mismo día
@@ -141,14 +146,13 @@ muestra datos equivocados.
 - **Kotlin + Compose for Wear OS**, plantilla de Android Studio.
 - **Ktor Client** con `kotlinx.serialization`. Un solo endpoint.
 - **HTTP en claro contra la IP local.** Red doméstica, un cliente, datos que no
-  son secretos. Android lo bloquea por defecto: hace falta un
-  `network_security_config.xml` habilitándolo solo para esa IP y declararlo en
-  el manifest.
+  son secretos. Android lo bloquea por defecto: `network_security_config.xml`
+  lo habilita para toda la app, porque la IP se puede cambiar desde Ajustes.
+- **Estado de la app en un `ViewModel`**; la URL del servidor, en **DataStore**.
 - **Sync manual con botón**, no `WorkManager`. Pasa una vez cada 4-8 semanas y
   sé cuándo.
-- **Instalación:** sideload por ADB. Habilitar opciones de desarrollador
-  (Ajustes → Acerca del reloj → tocar 5 veces el número de versión), activar
-  depuración por Wi-Fi, `adb connect`.
+- **Instalación:** sideload por ADB Wi-Fi. El paso a paso está en el README,
+  "Instalar y actualizar en el reloj".
 
 ## 7. Riesgos
 
@@ -178,3 +182,48 @@ muestra datos equivocados.
 - Sync manual con botón.
 - API en Node, la que ya está corriendo en el homelab.
 - Ingeniería inversa de la API de Mynter: descartada.
+- Nombre del día opcional en el JSON, deducido por el LLM al convertir.
+- URL del servidor editable en Ajustes, con valor por defecto en
+  `local.properties`.
+- Todos los avisos (éxito y errores) en un cartel en U abajo, que desaparece
+  solo.
+
+## 9. Cierre
+
+**Qué quedó hecho** (2026-09-11):
+
+- App instalada en el Watch8 por ADB Wi-Fi, con ícono y pantalla de carga propios.
+- Navegación semanas → días → ejercicios → ejercicio, con flechas entre los
+  ejercicios del mismo día.
+- Sincronización con la API del homelab, guardado atómico e historial en el
+  reloj; el estado vacío ofrece sincronizar.
+- Ajustes: sincronizar y servidor editable (cambiar y restablecer), con
+  validación de la URL.
+- Avisos de resultado en un cartel en U abajo.
+- API: `GET` y `POST /fierros/rutina` con validación, historial y log. Detalle en
+  `planificacion-conectar-api.md`.
+
+**Qué cambió respecto del plan:**
+
+- Se sumó la URL editable desde el reloj: la IP del homelab no es fija.
+- El JSON perdió el nombre del mesociclo y ganó el nombre del día.
+- La API también guarda historial y un log.
+- HTTP en claro habilitado para toda la app, no para una sola IP.
+
+**Riesgos, cómo terminaron:**
+
+- Sideload: resuelto.
+- Cero experiencia en Android/Kotlin: la app está andando en el reloj.
+- Red del reloj: sincroniza desde casa con el reloj en Wi-Fi. Queda sin probar
+  con el Wi-Fi apagado, saliendo por el Bluetooth del celular.
+- Batería y que la app no se use: se miden en la validación.
+
+**Pendiente: validación.** Dos semanas de uso real en el gimnasio. Es lo que
+decide si se hace la iteración 2. Conviene anotar mientras tanto:
+
+- si la miro entre series o me olvido de que está;
+- qué molesta (navegar, leer, que se apague la pantalla);
+- cuánta batería queda al terminar;
+- si la sincronización falla alguna vez.
+
+**Quedó para después:** "Iteración 2" y "Posibles mejoras" en el ToDo del README.

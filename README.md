@@ -55,6 +55,10 @@ usar la app. Mirar la muñeca entre serie y serie puede ser cómodo o puede ser
 un fastidio, y no lo sé hasta probarlo. Dos semanas de uso real lo contestan.
 Si no la uso, todo lo demás es trabajo tirado.
 
+**Estado:** desarrollo cerrado el 2026-09-11. En validación: dos semanas de uso
+real. Cierre en
+[`planificacion-it-1.md`](docs/planificaciones/planificacion-it-1.md#9-cierre).
+
 ### Iteración 2 — Registrar
 
 Anotar el peso levantado en cada ejercicio, una vez por ejercicio y no por cada
@@ -118,6 +122,9 @@ versión nueva se instala de la misma forma desde esta PC.
    adb devices          # tiene que listar <ip>:<puerto>  device
    ```
 
+   El reloj puede aparecer dos veces: por IP y como
+   `adb-XXXX._adb-tls-connect._tcp`. Es el mismo; en `-s` se usa la entrada por
+   IP.
 3. Compilar la versión nueva:
 
    ```powershell
@@ -136,8 +143,12 @@ versión nueva se instala de la misma forma desde esta PC.
    del servidor guardadas. `-s` elige el reloj si también está el emulador
    conectado.
 5. Abrir **Fierros** desde la lista de apps del reloj.
-6. Opcional: apagar **Depuración inalámbrica** para ahorrar batería. La app sigue
-   instalada.
+6. Apagar **Depuración inalámbrica** y **Depuración ADB** hasta la próxima
+   actualización: ahorra batería y el reloj deja de aceptar conexiones de
+   depuración. La app sigue instalada y sincroniza igual (no usa ADB). Para
+   actualizar, se vuelven a activar las dos y se sigue desde el paso 1; el
+   emparejamiento queda guardado y no hace falta repetirlo. No hace falta apagar
+   las opciones de desarrollador enteras.
 
 Alternativa desde Android Studio: con el reloj conectado (paso 2), elegirlo en el
 selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
@@ -152,9 +163,10 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 
 ## ToDo
 
-### Iteración 1
+### Iteración 1 — desarrollo cerrado, falta la validación
 
-- [ ] Resolver el sideload por ADB Wi-Fi, antes de escribir código.
+- [x] Resolver el sideload por ADB Wi-Fi (instalada en el Watch8 y sincronizando
+      desde casa).
 - [x] Crear el proyecto (Kotlin + Compose for Wear OS).
 - [x] Parsear `rutina.json` puesto a mano en `filesDir`.
 - [x] Selector de semana y día (navegación por niveles: semanas → días).
@@ -199,5 +211,6 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 
 - **Reloj:** Samsung Galaxy Watch8 40mm, Wear OS, sin LTE.
 - **Servidor:** homelab propio con la API ya corriendo.
-- **Estado:** iteración 1 en curso. La app navega la rutina y la API está
-  desplegada con la rutina cargada; falta conectarlas.
+- **Estado:** iteración 1 con el desarrollo cerrado (2026-09-11): instalada en el
+  reloj y sincronizando con la API. En validación: dos semanas de uso real en el
+  gimnasio.
