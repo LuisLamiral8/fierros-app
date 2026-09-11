@@ -1,13 +1,19 @@
 package com.luis.fierros.presentation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
@@ -20,26 +26,58 @@ import com.luis.fierros.data.CargaRutina
 import com.luis.fierros.data.Mesociclo
 import com.luis.fierros.data.ResultadoSync
 import com.luis.fierros.presentation.theme.FierrosTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun WearApp(viewModel: RutinaViewModel) {
+    val mensajeOk = stringResource(R.string.sync_ok)
+    var aviso by remember { mutableStateOf("") }
+    var avisoVisible by remember { mutableStateOf(false) }
+
+    // Una sincronización exitosa se avisa con un cartel abajo que desaparece solo;
+    // los errores quedan fijos en pantalla.
+    LaunchedEffect(viewModel.sincronizacion) {
+        val estado = viewModel.sincronizacion
+        if (estado is EstadoSincronizacion.Terminada && estado.resultado is ResultadoSync.Ok) {
+            aviso = mensajeOk
+            avisoVisible = true
+            viewModel.olvidarResultado()
+        }
+    }
+    LaunchedEffect(avisoVisible) {
+        if (avisoVisible) {
+            delay(2_000)
+            avisoVisible = false
+        }
+    }
+
     FierrosTheme {
         AppScaffold {
-            val titulo = stringResource(R.string.app_name)
-            when (val c = viewModel.carga) {
-                null -> PantallaLista(titulo, mensaje = stringResource(R.string.cargando))
-                // Sin rutina (o ilegible): se puede sincronizar desde acá mismo.
-                CargaRutina.SinRutina, is CargaRutina.Error -> {
-                    val motivo = if (c is CargaRutina.Error) c.mensaje else stringResource(R.string.sin_rutina)
-                    PantallaLista(
-                        titulo = titulo,
-                        mensaje = listOfNotNull(motivo, textoSincronizacion(viewModel.sincronizacion))
-                            .joinToString("\n\n"),
-                        opciones = listOf(Opcion(stringResource(R.string.sincronizar_datos))),
-                        onClick = { viewModel.sincronizar() },
-                    )
+            Box(Modifier.fillMaxSize()) {
+                val titulo = stringResource(R.string.app_name)
+                when (val c = viewModel.carga) {
+                    null -> PantallaLista(titulo, mensaje = stringResource(R.string.cargando))
+                    // Sin rutina (o ilegible): se puede sincronizar desde acá mismo.
+                    CargaRutina.SinRutina, is CargaRutina.Error -> {
+                        val motivo = if (c is CargaRutina.Error) c.mensaje else stringResource(R.string.sin_rutina)
+                        PantallaLista(
+                            titulo = titulo,
+                            mensaje = listOfNotNull(motivo, textoSincronizacion(viewModel.sincronizacion))
+                                .joinToString("\n\n"),
+                            opciones = listOf(Opcion(textoBotonSincronizar(viewModel.sincronizacion))),
+                            onClick = { viewModel.sincronizar() },
+                        )
+                    }
+                    is CargaRutina.Ok -> Navegacion(c.mesociclo, viewModel)
                 }
-                is CargaRutina.Ok -> Navegacion(c.mesociclo, viewModel)
+
+                // Por encima de cualquier pantalla.
+                AvisoInferior(
+                    aviso,
+                    visible = avisoVisible,
+                    onCerrar = { avisoVisible = false },
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                )
             }
         }
     }
@@ -70,7 +108,7 @@ private fun Navegacion(mesociclo: Mesociclo, viewModel: RutinaViewModel) {
             PantallaLista(
                 titulo = stringResource(R.string.ajustes),
                 mensaje = textoSincronizacion(viewModel.sincronizacion),
-                opciones = listOf(Opcion(stringResource(R.string.sincronizar_datos))),
+                opciones = listOf(Opcion(textoBotonSincronizar(viewModel.sincronizacion))),
                 onClick = { viewModel.sincronizar() },
             )
         }
@@ -130,14 +168,23 @@ private fun Navegacion(mesociclo: Mesociclo, viewModel: RutinaViewModel) {
     }
 }
 
-/** El mensaje que corresponde al estado de la sincronización, o null si no hay nada que decir. */
+/** Mientras sincroniza, el propio botón lo dice. */
+@Composable
+private fun textoBotonSincronizar(estado: EstadoSincronizacion): String =
+    if (estado == EstadoSincronizacion.EnCurso) {
+        stringResource(R.string.sincronizando)
+    } else {
+        stringResource(R.string.sincronizar_datos)
+    }
+
+/** El mensaje de error de la última sincronización, o null si no hay nada que decir. */
 @Composable
 private fun textoSincronizacion(estado: EstadoSincronizacion): String? =
     when (estado) {
         EstadoSincronizacion.Inactiva -> null
-        EstadoSincronizacion.EnCurso -> stringResource(R.string.sincronizando)
+        EstadoSincronizacion.EnCurso -> null // lo dice el botón (ver textoBotonSincronizar)
         is EstadoSincronizacion.Terminada -> when (val r = estado.resultado) {
-            is ResultadoSync.Ok -> stringResource(R.string.sync_ok)
+            is ResultadoSync.Ok -> null // se avisa con el cartel de abajo (ver WearApp)
             ResultadoSync.SinConexion -> stringResource(R.string.sync_sin_conexion)
             ResultadoSync.SinRutinaEnServidor -> stringResource(R.string.sync_sin_rutina)
             is ResultadoSync.ErrorServidor -> stringResource(R.string.sync_error_servidor, r.codigo)

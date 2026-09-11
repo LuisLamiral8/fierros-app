@@ -237,8 +237,8 @@ Al tocar **Sincronizar datos**:
 
 | Estado | Qué se ve |
 |---|---|
-| Sincronizando | "Sincronizando…". El botón no responde a un segundo toque |
-| Salió bien | "Rutina actualizada" |
+| Sincronizando | El botón pasa a decir "Sincronizando…" y no responde a un segundo toque |
+| Salió bien | Aviso "¡Actualizado!" abajo, con forma de U, que desaparece a los 2 segundos (tocarlo lo cierra antes) |
 | Sin conexión o timeout | "No se pudo conectar. ¿Estás en el Wi-Fi de casa?" |
 | La API no tiene rutina (404) | "El servidor no tiene ninguna rutina cargada" |
 | JSON inválido | "La rutina del servidor no es válida" y se conserva la anterior |
@@ -321,7 +321,7 @@ archivos cualquiera que sirva `datos/rutina.json` en `/fierros/rutina`.
 ## 9. Cuándo está listo
 
 - Un `POST` con `datos/rutina.json` desde la compu, y en el reloj **Sincronizar
-  datos** muestra "Rutina actualizada" y la rutina nueva, sin reiniciar la app.
+  datos** muestra "¡Actualizado!" y la rutina nueva, sin reiniciar la app.
 - Un reloj sin rutina puede sincronizar desde la pantalla vacía.
 - Sin red, la app avisa y conserva la rutina que tenía.
 - Se puede cambiar la URL desde Ajustes → Servidor y sincronizar contra la

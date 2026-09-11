@@ -1,10 +1,21 @@
 package com.luis.fierros.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -179,6 +190,58 @@ fun PantallaEjercicio(
             IconButton(onClick = it, modifier = Modifier.align(Alignment.CenterEnd)) {
                 Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.siguiente))
             }
+        }
+    }
+}
+
+/**
+ * Aviso abajo de todo, como los avisos del celular: una franja pegada al borde inferior con las
+ * esquinas de arriba redondeadas. La parte de abajo la curva la propia pantalla redonda, así que
+ * queda con forma de U. El texto va arriba, donde hay más ancho. Entra deslizando desde abajo y
+ * sale igual; cuánto tiempo se ve lo decide quien lo muestra, y tocarlo lo cierra antes.
+ */
+@Composable
+fun AvisoInferior(texto: String, visible: Boolean, onCerrar: () -> Unit, modifier: Modifier = Modifier) {
+    AnimatedVisibility(
+        visible = visible,
+        modifier = modifier,
+        enter = slideInVertically { it } + fadeIn(),
+        exit = slideOutVertically { it } + fadeOut(),
+    ) {
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(44.dp)
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainerHigh,
+                    RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
+                )
+                .clickable(onClick = onCerrar)
+                .padding(top = 10.dp),
+        ) {
+            Text(
+                text = texto,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+            )
+        }
+    }
+}
+
+@WearPreviewDevices
+@Composable
+fun AvisoInferiorPreview() {
+    FierrosTheme {
+        Box(Modifier.fillMaxSize()) {
+            AvisoInferior(
+                "¡Actualizado!",
+                visible = true,
+                onCerrar = {},
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
     }
 }
