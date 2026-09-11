@@ -1,0 +1,58 @@
+{
+  "semanas": [
+    {
+      "numero": 1,
+      "dias": [
+        {
+          "numero": 1,
+          "nombre": "Prueba B",
+          "ejercicios": [
+            {
+              "letra": "A1",
+              "nombre": "Press militar (prueba B)",
+              "series": 4,
+              "reps": "8-6",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "A2",
+              "nombre": "Estocadas (prueba B)",
+              "series": 4,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": "por pierna"
+            },
+            {
+              "letra": "B",
+              "nombre": "Plancha (prueba B)",
+              "series": 3,
+              "reps": "30 seg",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "dias": [
+        {
+          "numero": 1,
+          "nombre": "Prueba B",
+          "ejercicios": [
+            {
+              "letra": "A",
+              "nombre": "Peso muerto (prueba B, semana 2)",
+              "series": 5,
+              "reps": "5",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

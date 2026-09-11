@@ -11,4 +11,11 @@
     <string name="anterior">Anterior</string>
     <string name="siguiente">Siguiente</string>
     <string name="sincronizar_datos">Sincronizar datos</string>
+    <string name="sincronizando">Sincronizando…</string>
+    <string name="sync_ok">Rutina actualizada</string>
+    <string name="sync_sin_conexion">No se pudo conectar. ¿Estás en el Wi-Fi de casa?</string>
+    <string name="sync_sin_rutina">El servidor no tiene ninguna rutina cargada</string>
+    <string name="sync_error_servidor">El servidor respondió con un error (%1$d)</string>
+    <string name="sync_invalida">La rutina del servidor no es válida. Se conserva la anterior.</string>
+    <string name="sync_error_guardar">No se pudo guardar la rutina en el reloj</string>
 </resources>

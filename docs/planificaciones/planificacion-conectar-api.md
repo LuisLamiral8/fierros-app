@@ -225,9 +225,9 @@ Es lo mismo que ya describe `planificacion-it-1.md`:
 1. `GET /fierros/rutina`.
 2. Parsear el JSON. Si falla, no se toca nada.
 3. Escribirlo a un temporal en `filesDir`.
-4. Mover la rutina actual a `historial/`, con fecha **y hora** en el nombre
-   (`rutina-AAAA-MM-DD-HHmm.json`). La hora evita que dos sincronizaciones del
-   mismo día se pisen entre sí.
+4. Copiar la rutina actual a `historial/`, con fecha **y hora** en el nombre
+   (`rutina-AAAA-MM-DD-HHmmss.json`, igual que en la API). Se copia en vez de
+   moverla para que el reloj nunca quede sin rutina.
 5. Renombrar el temporal a `rutina.json`.
 6. Recargar la rutina en pantalla, sin tener que cerrar la app.
 

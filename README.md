@@ -87,12 +87,12 @@ usadas.
 - [x] Lista de ejercicios del día.
 - [x] Pantalla de ejercicio.
 - [x] Navegación entre ejercicios (pasar al siguiente sin volver a la lista).
-- [ ] Estado vacío cuando nunca sincronizó.
+- [x] Estado vacío cuando nunca sincronizó (ofrece sincronizar desde ahí).
 - [ ] Recordar la pantalla exacta (semana, día y ejercicio) y volver ahí al
       abrir la app.
 - [x] API: `GET` y `POST /fierros/rutina` con historial y log, desplegada en el
       homelab y con la rutina cargada.
-- [ ] Sync con botón: GET, `network_security_config.xml`, guardado atómico y
+- [x] Sync con botón: GET, `network_security_config.xml`, guardado atómico y
       rutina anterior a `historial/`. Detalle en
       [`planificacion-conectar-api.md`](docs/planificaciones/planificacion-conectar-api.md).
 - [ ] URL del servidor editable desde Ajustes (la IP del homelab no es fija).

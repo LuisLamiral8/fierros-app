@@ -84,8 +84,8 @@ un LLM — es un atajo manual, no una integración, y da lo mismo cuál se use.
 1. GET a la API.
 2. Parsear el JSON. Si falla, no se toca nada y la app muestra el error.
 3. Escribir el JSON nuevo a un archivo temporal.
-4. Mover la rutina actual a `historial/`, con fecha y hora en el nombre
-   (`rutina-AAAA-MM-DD-HHmm.json`), para que dos sincronizaciones del mismo día
+4. Copiar la rutina actual a `historial/`, con fecha y hora en el nombre
+   (`rutina-AAAA-MM-DD-HHmmss.json`), para que dos sincronizaciones del mismo día
    no se pisen.
 5. Renombrar el temporal a `rutina.json`.
 

@@ -1,0 +1,31 @@
+{
+  "semanas": [
+    {
+      "numero": 1,
+      "dias": [
+        {
+          "numero": 1,
+          "nombre": "Prueba A",
+          "ejercicios": [
+            {
+              "letra": "A",
+              "nombre": "Sentadilla (prueba A)",
+              "series": 3,
+              "reps": "10",
+              "peso": "0 kg",
+              "nota": null
+            },
+            {
+              "letra": "B",
+              "nombre": "Remo con barra (prueba A)",
+              "series": 3,
+              "reps": "12",
+              "peso": "0 kg",
+              "nota": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

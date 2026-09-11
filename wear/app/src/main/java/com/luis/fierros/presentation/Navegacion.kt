@@ -1,13 +1,13 @@
 package com.luis.fierros.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
@@ -18,27 +18,28 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.luis.fierros.R
 import com.luis.fierros.data.CargaRutina
 import com.luis.fierros.data.Mesociclo
-import com.luis.fierros.data.RutinaRepository
+import com.luis.fierros.data.ResultadoSync
 import com.luis.fierros.presentation.theme.FierrosTheme
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
-fun WearApp() {
-    val context = LocalContext.current
-    // null mientras se lee el archivo; la lectura corre en un hilo de I/O.
-    val carga by produceState<CargaRutina?>(initialValue = null) {
-        value = withContext(Dispatchers.IO) { RutinaRepository.cargar(context) }
-    }
-
+fun WearApp(viewModel: RutinaViewModel) {
     FierrosTheme {
         AppScaffold {
             val titulo = stringResource(R.string.app_name)
-            when (val c = carga) {
+            when (val c = viewModel.carga) {
                 null -> PantallaLista(titulo, mensaje = stringResource(R.string.cargando))
-                CargaRutina.SinRutina -> PantallaLista(titulo, mensaje = stringResource(R.string.sin_rutina))
-                is CargaRutina.Error -> PantallaLista(titulo, mensaje = c.mensaje)
-                is CargaRutina.Ok -> Navegacion(c.mesociclo)
+                // Sin rutina (o ilegible): se puede sincronizar desde acá mismo.
+                CargaRutina.SinRutina, is CargaRutina.Error -> {
+                    val motivo = if (c is CargaRutina.Error) c.mensaje else stringResource(R.string.sin_rutina)
+                    PantallaLista(
+                        titulo = titulo,
+                        mensaje = listOfNotNull(motivo, textoSincronizacion(viewModel.sincronizacion))
+                            .joinToString("\n\n"),
+                        opciones = listOf(Opcion(stringResource(R.string.sincronizar_datos))),
+                        onClick = { viewModel.sincronizar() },
+                    )
+                }
+                is CargaRutina.Ok -> Navegacion(c.mesociclo, viewModel)
             }
         }
     }
@@ -48,29 +49,34 @@ fun WearApp() {
 // Desde semanas, la tuerquita abre ajustes.
 // Volver atrás es deslizar hacia la derecha (swipe to dismiss).
 @Composable
-private fun Navegacion(mesociclo: Mesociclo) {
+private fun Navegacion(mesociclo: Mesociclo, viewModel: RutinaViewModel) {
     val navController = rememberSwipeDismissableNavController()
+    // El grafo de rutas se arma una sola vez. Las pantallas leen siempre la rutina más reciente,
+    // así que sincronizar no reinicia la navegación ni te saca de la pantalla en la que estás.
+    val rutina by rememberUpdatedState(mesociclo)
 
     SwipeDismissableNavHost(navController = navController, startDestination = "semanas") {
         composable("semanas") {
             PantallaLista(
                 titulo = stringResource(R.string.semanas),
-                opciones = mesociclo.semanas.map { Opcion(stringResource(R.string.semana, it.numero)) },
-                onClick = { i -> navController.navigate("dias/${mesociclo.semanas[i].numero}") },
+                opciones = rutina.semanas.map { Opcion(stringResource(R.string.semana, it.numero)) },
+                onClick = { i -> navController.navigate("dias/${rutina.semanas[i].numero}") },
                 onAjustes = { navController.navigate("ajustes") },
             )
         }
 
         composable("ajustes") {
+            LaunchedEffect(Unit) { viewModel.olvidarResultado() }
             PantallaLista(
                 titulo = stringResource(R.string.ajustes),
+                mensaje = textoSincronizacion(viewModel.sincronizacion),
                 opciones = listOf(Opcion(stringResource(R.string.sincronizar_datos))),
-                onClick = { /* Sync: GET a la API del homelab, próximo paso */ },
+                onClick = { viewModel.sincronizar() },
             )
         }
 
         composable("dias/{semana}") { entry ->
-            val semana = mesociclo.semana(entry.int("semana"))
+            val semana = rutina.semana(entry.int("semana"))
             if (semana == null) {
                 NoEncontrado()
             } else {
@@ -89,7 +95,7 @@ private fun Navegacion(mesociclo: Mesociclo) {
         }
 
         composable("ejercicios/{semana}/{dia}") { entry ->
-            val semana = mesociclo.semana(entry.int("semana"))
+            val semana = rutina.semana(entry.int("semana"))
             val dia = semana?.dia(entry.int("dia"))
             if (semana == null || dia == null) {
                 NoEncontrado()
@@ -105,7 +111,7 @@ private fun Navegacion(mesociclo: Mesociclo) {
         // Las flechas cambian de ejercicio dentro de esta misma pantalla, sin apilar rutas:
         // deslizar atrás siempre vuelve a la lista del día. Nunca pasan a otro día.
         composable("ejercicio/{semana}/{dia}/{indice}") { entry ->
-            val ejercicios = mesociclo.semana(entry.int("semana"))?.dia(entry.int("dia"))?.ejercicios
+            val ejercicios = rutina.semana(entry.int("semana"))?.dia(entry.int("dia"))?.ejercicios
             val inicial = entry.int("indice")
             if (ejercicios == null || inicial == null || inicial !in ejercicios.indices) {
                 NoEncontrado()
@@ -123,6 +129,22 @@ private fun Navegacion(mesociclo: Mesociclo) {
         }
     }
 }
+
+/** El mensaje que corresponde al estado de la sincronización, o null si no hay nada que decir. */
+@Composable
+private fun textoSincronizacion(estado: EstadoSincronizacion): String? =
+    when (estado) {
+        EstadoSincronizacion.Inactiva -> null
+        EstadoSincronizacion.EnCurso -> stringResource(R.string.sincronizando)
+        is EstadoSincronizacion.Terminada -> when (val r = estado.resultado) {
+            is ResultadoSync.Ok -> stringResource(R.string.sync_ok)
+            ResultadoSync.SinConexion -> stringResource(R.string.sync_sin_conexion)
+            ResultadoSync.SinRutinaEnServidor -> stringResource(R.string.sync_sin_rutina)
+            is ResultadoSync.ErrorServidor -> stringResource(R.string.sync_error_servidor, r.codigo)
+            ResultadoSync.RutinaInvalida -> stringResource(R.string.sync_invalida)
+            ResultadoSync.ErrorAlGuardar -> stringResource(R.string.sync_error_guardar)
+        }
+    }
 
 @Composable
 private fun NoEncontrado() {
