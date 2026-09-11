@@ -28,7 +28,7 @@ object ApiFierros {
 
     suspend fun descargarRutina(urlBase: String): RespuestaApi =
         try {
-            val respuesta = cliente.get("${urlBase.trimEnd('/')}/fierros/rutina")
+            val respuesta = cliente.get("${urlBase.trimEnd('/')}/api/fierros/rutina")
             if (respuesta.status.value == 200) {
                 RespuestaApi.Ok(respuesta.bodyAsText())
             } else {

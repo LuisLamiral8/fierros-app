@@ -61,13 +61,29 @@ real. Cierre en
 
 ### Iteración 2 — Cargar
 
-Una web mínima en el homelab para cargar la rutina de dos formas: con un
-formulario, o rápido, pegando el JSON que arma el LLM. También es donde se va a
-ver lo que registre en el reloj.
+Una web en el homelab para ver la rutina actual con lo que levanté en cada
+ejercicio, actualizarla de dos formas (pegando el JSON que arma el LLM o con un
+formulario) y ver las rutinas anteriores y la actividad del servidor. El login y
+el navbar con el usuario se diseñan ahora, pensando en un sistema de usuarios
+más adelante.
 
 **Para qué:** dejar de cargar la rutina con `curl`, y tener listo el lugar para
 mirar los pesos antes de empezar a registrarlos. Si el reloj registrara primero,
 los datos no se podrían ver en ningún lado.
+
+**Estado:** las cuatro fases están hechas y probadas en local (ver la rutina,
+pegar el JSON, rutinas anteriores y actividad, y el formulario), más editar la
+rutina actual. Falta desplegarla en el homelab y usarla.
+
+**Dónde vive:** el código está en el repo de la API
+(`homelab.luis-server-node-api/fierros-web/`), con su propio README.
+
+**Diseño:** [`planificacion-it-2.md`](docs/planificaciones/planificacion-it-2.md)
+(brief para diseñar las maquetas; el resultado está en
+`assets/Fierros Web (offline).html`, y las mejoras de editar la rutina en
+`assets/fierros_web_con_editar.html`).
+**Implementación técnica:**
+[`planificacion-it-2-implementacion-tecnica.md`](docs/planificaciones/planificacion-it-2-implementacion-tecnica.md).
 
 ### Iteración 3 — Registrar
 
@@ -190,12 +206,39 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 - [x] URL del servidor editable desde Ajustes (la IP del homelab no es fija).
 - [ ] Dos semanas de uso real en el gimnasio.
 
-### Iteración 2 — Cargar (web)
+### Iteración 2 — Web (hecha en local, falta desplegarla)
 
-- [ ] Web mínima en el homelab.
-- [ ] Cargar la rutina con un formulario.
-- [ ] Cargar la rutina rápido, pegando el JSON.
-- [ ] Ver y corregir la rutina cargada.
+- [x] Maquetas estáticas de toda la web (brief en `planificacion-it-2.md`):
+      login, navbar con usuario, rutina actual con lo levantado, detalle de
+      ejercicio, actualizar (JSON y formulario), rutinas anteriores y actividad.
+- [x] Fase 0: la web servida por Express en `/fierros/`, la API mudada a
+      `/api/fierros` y el navbar con las rutas.
+- [x] Fase 1: ver la rutina actual por semanas, con la columna "Levanté" (en 0
+      hasta la iteración 3) y el panel del ejercicio.
+- [x] Fase 2: actualizar la rutina pegando el JSON, con validación y vista previa.
+- [x] Fase 3: ver rutinas anteriores (el historial del servidor) y la actividad
+      (el log), y volver a usar una rutina anterior.
+- [x] Fase 4: cargar una rutina con el formulario, desde cero.
+- [x] Editar la rutina actual desde el formulario, precargada.
+- [ ] Login y usuarios: solo diseño por ahora.
+- [ ] Responsive (celular). Hoy está pensada para la compu.
+
+### Puesta en producción de la iteración 2
+
+- [ ] Commitear el repo de Fierros (el cambio del reloj a `/api`, los docs y los
+      prototipos) y pushear los dos repos.
+- [ ] Desplegar: en el servidor, `git pull` y `docker compose up -d --build`. Es
+      la primera vez que el `Dockerfile` compila la web, y no se pudo probar en
+      la PC.
+- [ ] Instalar en el reloj la versión que pide `/api/fierros/rutina` (ver
+      "Instalar y actualizar en el reloj"). Hasta entonces el reloj no sincroniza.
+- [ ] Comprobar en Anteriores → Actividad que la sincronización del reloj figure
+      como "El reloj bajó la rutina" (la API lo deduce del User-Agent).
+- [ ] Confirmar que el `.env` del servidor tenga
+      `TZ=America/Argentina/Buenos_Aires`. El `docker-compose.yml` no lo define y
+      sin eso las horas del log y del historial salen en UTC.
+- [ ] Cerrar la iteración 2 en
+      `planificacion-it-2-implementacion-tecnica.md`, como se hizo con la 1.
 
 ### Iteración 3 — Registrar
 
@@ -217,6 +260,10 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
       opción de mostrar la última app al levantar la muñeca.
 - [ ] Validar el puerto de la URL del servidor (un número del 1 al 65535). Hoy
       "192.168.1.57:abc" se acepta y recién falla al sincronizar.
+- [ ] Aplicar el tope de 5 semanas también en la API. Hoy es solo del formulario:
+      un JSON pegado con más semanas se acepta igual.
+- [ ] Un `nodemon.json` que ignore `data/`, `public/` y `fierros-web/`, para que
+      la API no se reinicie sola al compilar la web o al guardar una rutina.
 
 ## Contexto
 
@@ -224,4 +271,5 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 - **Servidor:** homelab propio con la API ya corriendo.
 - **Estado:** iteración 1 con el desarrollo cerrado (2026-09-11): instalada en el
   reloj y sincronizando con la API. En validación: dos semanas de uso real en el
-  gimnasio.
+  gimnasio. Iteración 2 (la web) terminada en local el 2026-09-11 y pendiente de
+  deploy.
