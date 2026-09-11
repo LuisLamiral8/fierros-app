@@ -7,9 +7,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -23,30 +23,41 @@ import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.luis.fierros.R
 import com.luis.fierros.data.CargaRutina
-import com.luis.fierros.data.Mesociclo
 import com.luis.fierros.data.ResultadoSync
 import com.luis.fierros.presentation.theme.FierrosTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun WearApp(viewModel: RutinaViewModel) {
-    val mensajeOk = stringResource(R.string.sync_ok)
     var aviso by remember { mutableStateOf("") }
     var avisoVisible by remember { mutableStateOf(false) }
+    var avisoDuracionMs by remember { mutableLongStateOf(2_000L) }
 
-    // Una sincronización exitosa se avisa con un cartel abajo que desaparece solo;
-    // los errores quedan fijos en pantalla.
-    LaunchedEffect(viewModel.sincronizacion) {
-        val estado = viewModel.sincronizacion
-        if (estado is EstadoSincronizacion.Terminada && estado.resultado is ResultadoSync.Ok) {
-            aviso = mensajeOk
+    // El resultado de cada sincronización se avisa con el cartel de abajo, que desaparece solo:
+    // 2 segundos si salió bien, 3 si hubo un error (para que dé tiempo a leerlo).
+    val terminada = viewModel.sincronizacion as? EstadoSincronizacion.Terminada
+    val textoTerminada = terminada?.let { textoResultado(it.resultado) }
+    LaunchedEffect(terminada) {
+        if (terminada != null && textoTerminada != null) {
+            aviso = textoTerminada
+            avisoDuracionMs = if (terminada.resultado is ResultadoSync.Ok) 2_000L else 3_000L
             avisoVisible = true
             viewModel.olvidarResultado()
         }
     }
-    LaunchedEffect(avisoVisible) {
+    // Una URL inválida en Ajustes -> Servidor usa el mismo cartel (es un error: 3 segundos).
+    val textoUrlInvalida = stringResource(R.string.url_invalida)
+    LaunchedEffect(viewModel.urlInvalida) {
+        if (viewModel.urlInvalida) {
+            aviso = textoUrlInvalida
+            avisoDuracionMs = 3_000L
+            avisoVisible = true
+            viewModel.olvidarUrlInvalida()
+        }
+    }
+    LaunchedEffect(avisoVisible, aviso) {
         if (avisoVisible) {
-            delay(2_000)
+            delay(avisoDuracionMs)
             avisoVisible = false
         }
     }
@@ -54,22 +65,7 @@ fun WearApp(viewModel: RutinaViewModel) {
     FierrosTheme {
         AppScaffold {
             Box(Modifier.fillMaxSize()) {
-                val titulo = stringResource(R.string.app_name)
-                when (val c = viewModel.carga) {
-                    null -> PantallaLista(titulo, mensaje = stringResource(R.string.cargando))
-                    // Sin rutina (o ilegible): se puede sincronizar desde acá mismo.
-                    CargaRutina.SinRutina, is CargaRutina.Error -> {
-                        val motivo = if (c is CargaRutina.Error) c.mensaje else stringResource(R.string.sin_rutina)
-                        PantallaLista(
-                            titulo = titulo,
-                            mensaje = listOfNotNull(motivo, textoSincronizacion(viewModel.sincronizacion))
-                                .joinToString("\n\n"),
-                            opciones = listOf(Opcion(textoBotonSincronizar(viewModel.sincronizacion))),
-                            onClick = { viewModel.sincronizar() },
-                        )
-                    }
-                    is CargaRutina.Ok -> Navegacion(c.mesociclo, viewModel)
-                }
+                Navegacion(viewModel)
 
                 // Por encima de cualquier pantalla.
                 AvisoInferior(
@@ -84,37 +80,58 @@ fun WearApp(viewModel: RutinaViewModel) {
 }
 
 // Rutas: semanas → dias/{semana} → ejercicios/{semana}/{dia} → ejercicio/{semana}/{dia}/{indice}.
-// Desde semanas, la tuerquita abre ajustes.
+// Desde semanas (haya rutina o no), la tuerquita abre ajustes → servidor.
 // Volver atrás es deslizar hacia la derecha (swipe to dismiss).
+//
+// El grafo de rutas se arma una sola vez y cada pantalla lee la rutina del ViewModel: al
+// sincronizar se actualizan solas, sin reiniciar la navegación.
 @Composable
-private fun Navegacion(mesociclo: Mesociclo, viewModel: RutinaViewModel) {
+private fun Navegacion(viewModel: RutinaViewModel) {
     val navController = rememberSwipeDismissableNavController()
-    // El grafo de rutas se arma una sola vez. Las pantallas leen siempre la rutina más reciente,
-    // así que sincronizar no reinicia la navegación ni te saca de la pantalla en la que estás.
-    val rutina by rememberUpdatedState(mesociclo)
 
     SwipeDismissableNavHost(navController = navController, startDestination = "semanas") {
         composable("semanas") {
-            PantallaLista(
-                titulo = stringResource(R.string.semanas),
-                opciones = rutina.semanas.map { Opcion(stringResource(R.string.semana, it.numero)) },
-                onClick = { i -> navController.navigate("dias/${rutina.semanas[i].numero}") },
-                onAjustes = { navController.navigate("ajustes") },
-            )
+            val titulo = stringResource(R.string.app_name)
+            when (val c = viewModel.carga) {
+                null -> PantallaLista(titulo, mensaje = stringResource(R.string.cargando))
+                // Sin rutina (o ilegible): se puede sincronizar desde acá, y Ajustes queda a mano
+                // por si hay que cambiar el servidor.
+                CargaRutina.SinRutina, is CargaRutina.Error -> {
+                    val motivo = if (c is CargaRutina.Error) c.mensaje else stringResource(R.string.sin_rutina)
+                    PantallaLista(
+                        titulo = titulo,
+                        mensaje = motivo,
+                        opciones = listOf(Opcion(textoBotonSincronizar(viewModel.sincronizacion))),
+                        onClick = { viewModel.sincronizar() },
+                        botonInferior = { BotonAjustes { navController.navigate("ajustes") } },
+                    )
+                }
+                is CargaRutina.Ok -> PantallaLista(
+                    titulo = stringResource(R.string.semanas),
+                    opciones = c.mesociclo.semanas.map { Opcion(stringResource(R.string.semana, it.numero)) },
+                    onClick = { i -> navController.navigate("dias/${c.mesociclo.semanas[i].numero}") },
+                    botonInferior = { BotonAjustes { navController.navigate("ajustes") } },
+                )
+            }
         }
 
         composable("ajustes") {
-            LaunchedEffect(Unit) { viewModel.olvidarResultado() }
             PantallaLista(
                 titulo = stringResource(R.string.ajustes),
-                mensaje = textoSincronizacion(viewModel.sincronizacion),
-                opciones = listOf(Opcion(textoBotonSincronizar(viewModel.sincronizacion))),
-                onClick = { viewModel.sincronizar() },
+                opciones = listOf(
+                    Opcion(textoBotonSincronizar(viewModel.sincronizacion)),
+                    Opcion(stringResource(R.string.servidor)),
+                ),
+                onClick = { i -> if (i == 0) viewModel.sincronizar() else navController.navigate("servidor") },
             )
         }
 
+        composable("servidor") {
+            PantallaServidor(viewModel)
+        }
+
         composable("dias/{semana}") { entry ->
-            val semana = rutina.semana(entry.int("semana"))
+            val semana = viewModel.rutina?.semana(entry.int("semana"))
             if (semana == null) {
                 NoEncontrado()
             } else {
@@ -133,7 +150,7 @@ private fun Navegacion(mesociclo: Mesociclo, viewModel: RutinaViewModel) {
         }
 
         composable("ejercicios/{semana}/{dia}") { entry ->
-            val semana = rutina.semana(entry.int("semana"))
+            val semana = viewModel.rutina?.semana(entry.int("semana"))
             val dia = semana?.dia(entry.int("dia"))
             if (semana == null || dia == null) {
                 NoEncontrado()
@@ -149,7 +166,7 @@ private fun Navegacion(mesociclo: Mesociclo, viewModel: RutinaViewModel) {
         // Las flechas cambian de ejercicio dentro de esta misma pantalla, sin apilar rutas:
         // deslizar atrás siempre vuelve a la lista del día. Nunca pasan a otro día.
         composable("ejercicio/{semana}/{dia}/{indice}") { entry ->
-            val ejercicios = rutina.semana(entry.int("semana"))?.dia(entry.int("dia"))?.ejercicios
+            val ejercicios = viewModel.rutina?.semana(entry.int("semana"))?.dia(entry.int("dia"))?.ejercicios
             val inicial = entry.int("indice")
             if (ejercicios == null || inicial == null || inicial !in ejercicios.indices) {
                 NoEncontrado()
@@ -177,20 +194,16 @@ private fun textoBotonSincronizar(estado: EstadoSincronizacion): String =
         stringResource(R.string.sincronizar_datos)
     }
 
-/** El mensaje de error de la última sincronización, o null si no hay nada que decir. */
+/** Lo que dice el cartel de abajo cuando termina una sincronización. */
 @Composable
-private fun textoSincronizacion(estado: EstadoSincronizacion): String? =
-    when (estado) {
-        EstadoSincronizacion.Inactiva -> null
-        EstadoSincronizacion.EnCurso -> null // lo dice el botón (ver textoBotonSincronizar)
-        is EstadoSincronizacion.Terminada -> when (val r = estado.resultado) {
-            is ResultadoSync.Ok -> null // se avisa con el cartel de abajo (ver WearApp)
-            ResultadoSync.SinConexion -> stringResource(R.string.sync_sin_conexion)
-            ResultadoSync.SinRutinaEnServidor -> stringResource(R.string.sync_sin_rutina)
-            is ResultadoSync.ErrorServidor -> stringResource(R.string.sync_error_servidor, r.codigo)
-            ResultadoSync.RutinaInvalida -> stringResource(R.string.sync_invalida)
-            ResultadoSync.ErrorAlGuardar -> stringResource(R.string.sync_error_guardar)
-        }
+private fun textoResultado(resultado: ResultadoSync): String =
+    when (resultado) {
+        is ResultadoSync.Ok -> stringResource(R.string.sync_ok)
+        ResultadoSync.SinConexion -> stringResource(R.string.sync_sin_conexion)
+        ResultadoSync.SinRutinaEnServidor -> stringResource(R.string.sync_sin_rutina)
+        is ResultadoSync.ErrorServidor -> stringResource(R.string.sync_error_servidor, resultado.codigo)
+        ResultadoSync.RutinaInvalida -> stringResource(R.string.sync_invalida)
+        ResultadoSync.ErrorAlGuardar -> stringResource(R.string.sync_error_guardar)
     }
 
 @Composable

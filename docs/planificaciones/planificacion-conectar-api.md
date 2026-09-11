@@ -239,21 +239,31 @@ Al tocar **Sincronizar datos**:
 |---|---|
 | Sincronizando | El botón pasa a decir "Sincronizando…" y no responde a un segundo toque |
 | Salió bien | Aviso "¡Actualizado!" abajo, con forma de U, que desaparece a los 2 segundos (tocarlo lo cierra antes) |
-| Sin conexión o timeout | "No se pudo conectar. ¿Estás en el Wi-Fi de casa?" |
-| La API no tiene rutina (404) | "El servidor no tiene ninguna rutina cargada" |
-| JSON inválido | "La rutina del servidor no es válida" y se conserva la anterior |
+| Sin conexión o timeout | Aviso "No se pudo conectar" (3 segundos) |
+| La API no tiene rutina (404) | Aviso "El servidor no tiene rutina" (3 segundos) |
+| JSON inválido | Aviso "Rutina inválida en el servidor" (3 segundos); se conserva la anterior |
 
-Además hay un segundo ítem, **Servidor**, que muestra la URL actual. Al tocarlo
-se abre el teclado del reloj (el mismo de los mensajes, con dictado) para
-escribir la nueva, por ejemplo `http://192.168.100.57:3000`. Se valida que
-empiece con `http://` y se guarda. Se usa una vez cada mucho, así que alcanza
-con el teclado del sistema.
+Todos los resultados usan el mismo aviso de abajo; no queda ningún mensaje fijo en
+la pantalla.
+
+Además hay un segundo ítem, **Servidor**, que abre la pantalla **Servidor**: la
+URL que se está usando y, debajo, dos botones (la pantalla se scrollea como las
+demás listas):
+
+- **Cambiar:** abre el teclado del reloj (el mismo de los mensajes, con dictado).
+  Si se escribe sin `http://` (por ejemplo `192.168.1.57:3000`), se agrega solo;
+  los espacios del dictado se ignoran. Si no es una dirección válida (una IPv4
+  completa, o un nombre con punto como `api.luis`), aparece abajo el aviso
+  "Dirección no válida" y no se guarda nada.
+- **Restablecer:** vuelve a la URL de `local.properties`.
+
+Se usa una vez cada mucho, así que alcanza con el teclado del sistema.
 
 ### 4.5 Estado vacío
 
-Hoy, si el reloj nunca sincronizó, la app dice "No hay rutina guardada" pero no
-muestra la tuerquita, así que no hay forma de sincronizar. Con esto, esa pantalla
-tiene que ofrecer **Sincronizar datos** directamente.
+Si el reloj nunca sincronizó, la pantalla principal dice "No hay rutina
+guardada", ofrece **Sincronizar datos** directamente y muestra la tuerquita, para
+poder cambiar el servidor si la URL por defecto no sirve.
 
 ### 4.6 Cambio de estructura
 

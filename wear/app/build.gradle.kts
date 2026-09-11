@@ -61,6 +61,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
+    implementation(libs.datastore.preferences)
+    implementation(libs.wear.input)
     implementation(libs.play.services.wearable)
     implementation(libs.ui)
     implementation(libs.ui.graphics)

@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -52,8 +53,8 @@ import com.luis.fierros.presentation.theme.FierrosTheme
 data class Opcion(val texto: String, val etiqueta: String? = null)
 
 /**
- * Lista con título y un botón por opción. La usan semanas, días, ejercicios y ajustes.
- * Si se pasa [onAjustes], abajo de todo aparece la tuerquita.
+ * Lista con título y un botón por opción. La usan semanas, días, ejercicios, ajustes y servidor.
+ * [botonInferior] va abajo de todo, con la forma del borde de la pantalla (ver [BotonAjustes]).
  */
 @Composable
 fun PantallaLista(
@@ -62,7 +63,7 @@ fun PantallaLista(
     anchoEtiqueta: Dp = 36.dp,
     mensaje: String? = null,
     onClick: (indice: Int) -> Unit = {},
-    onAjustes: (() -> Unit)? = null,
+    botonInferior: (@Composable BoxScope.() -> Unit)? = null,
 ) {
     val listState = rememberTransformingLazyColumnState()
     val transformationSpec = rememberTransformationSpec()
@@ -82,18 +83,19 @@ fun PantallaLista(
                     Text(
                         text = mensaje,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
+                        // Aire entre el mensaje y los botones que vienen debajo.
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                     )
                 }
             }
             items(opciones.size) { indice ->
+                val opcion = opciones[indice]
                 Button(
                     onClick = { onClick(indice) },
                     modifier = Modifier.fillMaxWidth()
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
                 ) {
-                    val opcion = opciones[indice]
                     if (opcion.etiqueta != null) {
                         Text(
                             text = opcion.etiqueta,
@@ -107,20 +109,21 @@ fun PantallaLista(
         }
     }
 
-    if (onAjustes == null) {
+    if (botonInferior == null) {
         ScreenScaffold(scrollState = listState, content = contenido)
     } else {
-        ScreenScaffold(
-            scrollState = listState,
-            edgeButton = {
-                EdgeButton(onClick = onAjustes, buttonSize = EdgeButtonSize.Small) {
-                    Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.ajustes))
-                }
-            },
-            content = contenido,
-        )
+        ScreenScaffold(scrollState = listState, edgeButton = botonInferior, content = contenido)
     }
 }
+
+/** La tuerquita de abajo de todo, con la forma del borde de la pantalla. */
+@Composable
+fun BotonAjustes(onClick: () -> Unit) {
+    EdgeButton(onClick = onClick, buttonSize = EdgeButtonSize.Small) {
+        Icon(Icons.Filled.Settings, contentDescription = stringResource(R.string.ajustes))
+    }
+}
+
 
 /**
  * Una pantalla = un ejercicio: letra, nombre grande, series × reps, peso y nota.
@@ -212,20 +215,23 @@ fun AvisoInferior(texto: String, visible: Boolean, onCerrar: () -> Unit, modifie
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(44.dp)
+                .heightIn(min = 44.dp)
                 .background(
                     MaterialTheme.colorScheme.surfaceContainerHigh,
                     RoundedCornerShape(topStart = 22.dp, topEnd = 22.dp),
                 )
                 .clickable(onClick = onCerrar)
-                .padding(top = 10.dp),
+                .padding(top = 10.dp, bottom = 18.dp),
         ) {
+            // Hasta dos renglones angostos: si el texto es largo, la franja crece hacia arriba,
+            // donde la U es más ancha, en vez de cortarse contra la curva.
             Text(
                 text = texto,
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Center,
-                maxLines = 1,
+                maxLines = 2,
+                modifier = Modifier.widthIn(max = 130.dp),
             )
         }
     }

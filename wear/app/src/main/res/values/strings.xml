@@ -8,14 +8,19 @@
     <string name="dia">Día %1$d</string>    <string name="titulo_dia">Semana %1$d · Día %2$d</string>
     <string name="series_por_reps">%1$d × %2$s</string>
     <string name="ajustes">Ajustes</string>
+    <string name="servidor">Servidor</string>
+    <string name="cambiar">Cambiar</string>
+    <string name="restablecer">Restablecer</string>
+    <string name="url_del_servidor">URL del servidor</string>
+    <string name="url_invalida">Dirección no válida</string>
     <string name="anterior">Anterior</string>
     <string name="siguiente">Siguiente</string>
     <string name="sincronizar_datos">Sincronizar datos</string>
     <string name="sincronizando">Sincronizando…</string>
     <string name="sync_ok">¡Actualizado!</string>
-    <string name="sync_sin_conexion">No se pudo conectar. ¿Estás en el Wi-Fi de casa?</string>
-    <string name="sync_sin_rutina">El servidor no tiene ninguna rutina cargada</string>
-    <string name="sync_error_servidor">El servidor respondió con un error (%1$d)</string>
-    <string name="sync_invalida">La rutina del servidor no es válida. Se conserva la anterior.</string>
-    <string name="sync_error_guardar">No se pudo guardar la rutina en el reloj</string>
+    <string name="sync_sin_conexion">No se pudo conectar</string>
+    <string name="sync_sin_rutina">El servidor no tiene rutina</string>
+    <string name="sync_error_servidor">Error del servidor (%1$d)</string>
+    <string name="sync_invalida">Rutina inválida en el servidor</string>
+    <string name="sync_error_guardar">No se pudo guardar la rutina</string>
 </resources>
