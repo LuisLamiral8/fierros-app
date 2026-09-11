@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    La API del homelab es HTTP en claro y su IP se puede cambiar desde Ajustes -> Servidor,
+    así que no alcanza con habilitar una IP fija: se habilita para toda la app.
+    Es aceptable porque la app solo habla con el homelab, dentro de la red de casa.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

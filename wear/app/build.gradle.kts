@@ -1,3 +1,13 @@
+import java.util.Properties
+
+// local.properties no se versiona: cada PC define ahí la URL por defecto de la API.
+val localProperties = Properties().apply {
+    val archivo = rootProject.file("local.properties")
+    if (archivo.exists()) archivo.inputStream().use { load(it) }
+}
+val apiUrlPorDefecto: String = localProperties.getProperty("api.url.defecto")
+    ?: error("Falta api.url.defecto en wear/local.properties, por ejemplo: api.url.defecto=http://<ip-del-servidor>:3000")
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -17,6 +27,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // Punto de partida; si se cambia desde Ajustes -> Servidor, manda la guardada en el reloj.
+        buildConfigField("String", "API_URL_POR_DEFECTO", "\"$apiUrlPorDefecto\"")
     }
 
     buildTypes {
@@ -33,6 +45,7 @@ android {
     useLibrary("wear-sdk")
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

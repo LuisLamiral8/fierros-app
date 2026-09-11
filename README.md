@@ -90,8 +90,12 @@ usadas.
 - [ ] Estado vacío cuando nunca sincronizó.
 - [ ] Recordar la pantalla exacta (semana, día y ejercicio) y volver ahí al
       abrir la app.
+- [x] API: `GET` y `POST /fierros/rutina` con historial y log, desplegada en el
+      homelab y con la rutina cargada.
 - [ ] Sync con botón: GET, `network_security_config.xml`, guardado atómico y
-      rutina anterior a `historial/`.
+      rutina anterior a `historial/`. Detalle en
+      [`planificacion-conectar-api.md`](docs/planificaciones/planificacion-conectar-api.md).
+- [ ] URL del servidor editable desde Ajustes (la IP del homelab no es fija).
 - [ ] Dos semanas de uso real en el gimnasio.
 
 ### Iteración 2
@@ -114,4 +118,5 @@ usadas.
 
 - **Reloj:** Samsung Galaxy Watch8 40mm, Wear OS, sin LTE.
 - **Servidor:** homelab propio con la API ya corriendo.
-- **Estado:** iteración 1 definida, por arrancar.
+- **Estado:** iteración 1 en curso. La app navega la rutina y la API está
+  desplegada con la rutina cargada; falta conectarlas.
