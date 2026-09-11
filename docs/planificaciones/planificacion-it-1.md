@@ -69,7 +69,8 @@ que van por pierna.
 - `reps` y `peso` son strings. El peso admite cosas como "peso corporal" o
   "12 kg c/mano".
 - **`peso` va en "0 kg" en esta iteración**: el campo existe en el esquema pero
-  todavía no se maneja. Se completa de verdad a partir de la iteración 2.
+  todavía no se maneja. Se completa de verdad a partir de la iteración 3
+  (registro).
 - `nota`: aclaraciones sueltas ("por pierna"), o `null`.
 - `nombre` del día: "Full Body", "Tren superior"... Mynter no lo muestra, así
   que lo deduce el LLM a partir de los ejercicios al convertir. En la app es
@@ -80,7 +81,7 @@ que van por pierna.
   y a cambio la UI queda trivial y aguanta que una semana cambie un ejercicio.
 
 **Cómo llega la rutina a la API en esta iteración:** a mano, con un POST del
-JSON armado en la compu. La web de carga es la iteración 3. El JSON se puede
+JSON armado en la compu. La web de carga es la iteración 2. El JSON se puede
 tipear o generarse a partir de los screenshots de Mynter pegados en un chat con
 un LLM — es un atajo manual, no una integración, y da lo mismo cuál se use.
 
@@ -117,7 +118,7 @@ además un número (A1, A2), aunque sea el mismo ejercicio repetido.
 
 **Superseries: no se modelan como grupo.** Son ejercicios sueltos en la lista,
 con la letra visible. El agrupamiento recién importa cuando haya navegación
-automática entre series, que es de la iteración 2 en adelante.
+automática entre series, que es de la iteración 3 (registro) en adelante.
 
 ## 5. UI
 
@@ -201,7 +202,7 @@ muestra datos equivocados.
   validación de la URL.
 - Avisos de resultado en un cartel en U abajo.
 - API: `GET` y `POST /fierros/rutina` con validación, historial y log. Detalle en
-  `planificacion-conectar-api.md`.
+  el README de la API (`homelab.luis-server-node-api`).
 
 **Qué cambió respecto del plan:**
 
@@ -219,11 +220,12 @@ muestra datos equivocados.
 - Batería y que la app no se use: se miden en la validación.
 
 **Pendiente: validación.** Dos semanas de uso real en el gimnasio. Es lo que
-decide si se hace la iteración 2. Conviene anotar mientras tanto:
+decide si se siguen las próximas iteraciones. Conviene anotar mientras tanto:
 
 - si la miro entre series o me olvido de que está;
 - qué molesta (navegar, leer, que se apague la pantalla);
 - cuánta batería queda al terminar;
 - si la sincronización falla alguna vez.
 
-**Quedó para después:** "Iteración 2" y "Posibles mejoras" en el ToDo del README.
+**Quedó para después:** las iteraciones 2 (web) y 3 (registro), y "Posibles
+mejoras", en el ToDo del README.

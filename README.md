@@ -59,17 +59,26 @@ Si no la uso, todo lo demás es trabajo tirado.
 real. Cierre en
 [`planificacion-it-1.md`](docs/planificaciones/planificacion-it-1.md#9-cierre).
 
-### Iteración 2 — Registrar
+### Iteración 2 — Cargar
+
+Una web mínima en el homelab para cargar la rutina de dos formas: con un
+formulario, o rápido, pegando el JSON que arma el LLM. También es donde se va a
+ver lo que registre en el reloj.
+
+**Para qué:** dejar de cargar la rutina con `curl`, y tener listo el lugar para
+mirar los pesos antes de empezar a registrarlos. Si el reloj registrara primero,
+los datos no se podrían ver en ningún lado.
+
+### Iteración 3 — Registrar
 
 Anotar el peso levantado en cada ejercicio, una vez por ejercicio y no por cada
-serie. Se guarda en el reloj y se sincroniza a la API cuando vuelvo a casa.
+serie. Se guarda en el reloj, se sincroniza a la API cuando vuelvo a casa y se ve
+en la web, en formato copiable para volcarlo a Mynter.
 
 **Para qué:** que el registro en Mynter deje de salir de la memoria.
 
-### Iteración 3 — Cargar
-
-Una web mínima en el homelab para cargar y corregir rutinas cómodamente, y para
-ver lo registrado en formato copiable a la hora de volcarlo a Mynter.
+El orden de las iteraciones 2 y 3 se invirtió el 2026-09-11: primero la web, para
+tener dónde ver los registros.
 
 ### Después (sin compromiso)
 
@@ -177,26 +186,28 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 - [x] API: `GET` y `POST /fierros/rutina` con historial y log, desplegada en el
       homelab y con la rutina cargada.
 - [x] Sync con botón: GET, `network_security_config.xml`, guardado atómico y
-      rutina anterior a `historial/`. Detalle en
-      [`planificacion-conectar-api.md`](docs/planificaciones/planificacion-conectar-api.md).
+      rutina anterior a `historial/`.
 - [x] URL del servidor editable desde Ajustes (la IP del homelab no es fija).
 - [ ] Dos semanas de uso real en el gimnasio.
 
-### Iteración 2
+### Iteración 2 — Cargar (web)
 
-- [ ] Mejorar cómo se ven las series × reps largas en la pantalla de ejercicio:
-      hoy "5 × 20-12-10-8-6" se corta en "20-12-10-8 / -6". Ya se probó
-      achicar la letra automáticamente para que entre en un renglón, y se
-      descartó porque no gustó.
+- [ ] Web mínima en el homelab.
+- [ ] Cargar la rutina con un formulario.
+- [ ] Cargar la rutina rápido, pegando el JSON.
+- [ ] Ver y corregir la rutina cargada.
+
+### Iteración 3 — Registrar
+
 - [ ] Registrar el peso levantado, uno por ejercicio.
 - [ ] Empezar a cargar el peso real en el JSON (hoy va en "0 kg").
 - [ ] Sincronizar los registros a la API.
 - [ ] Definir qué pasa al sincronizar la rutina si hay registros sin subir.
-
-### Iteración 3
-
-- [ ] Web mínima en el homelab para cargar y corregir rutinas.
-- [ ] Vista de lo registrado en formato copiable para volcar a Mynter.
+- [ ] Ver lo registrado en la web, en formato copiable para volcar a Mynter.
+- [ ] Mejorar cómo se ven las series × reps largas en la pantalla de ejercicio:
+      hoy "5 × 20-12-10-8-6" se corta en "20-12-10-8 / -6". Ya se probó
+      achicar la letra automáticamente para que entre en un renglón, y se
+      descartó porque no gustó.
 
 ### Posibles mejoras (sin compromiso)
 
