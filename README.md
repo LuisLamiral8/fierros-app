@@ -71,9 +71,10 @@ más adelante.
 mirar los pesos antes de empezar a registrarlos. Si el reloj registrara primero,
 los datos no se podrían ver en ningún lado.
 
-**Estado:** las cuatro fases están hechas y probadas en local (ver la rutina,
-pegar el JSON, rutinas anteriores y actividad, y el formulario), más editar la
-rutina actual. Falta desplegarla en el homelab y usarla.
+**Estado:** cerrada el 2026-09-11. Desplegada en el homelab y andando: se ve la
+rutina, se carga pegando el JSON o con el formulario, se edita la actual, y están
+las rutinas anteriores con la actividad. El reloj sincroniza por `/api`. Cierre en
+[`planificacion-it-2-implementacion-tecnica.md`](docs/planificaciones/planificacion-it-2-implementacion-tecnica.md#12-cierre).
 
 **Dónde vive:** el código está en el repo de la API
 (`homelab.luis-server-node-api/fierros-web/`), con su propio README.
@@ -223,22 +224,21 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 - [ ] Login y usuarios: solo diseño por ahora.
 - [ ] Responsive (celular). Hoy está pensada para la compu.
 
-### Puesta en producción de la iteración 2
+### Puesta en producción de la iteración 2 — hecha (2026-09-11)
 
-- [ ] Commitear el repo de Fierros (el cambio del reloj a `/api`, los docs y los
-      prototipos) y pushear los dos repos.
-- [ ] Desplegar: en el servidor, `git pull` y `docker compose up -d --build`. Es
-      la primera vez que el `Dockerfile` compila la web, y no se pudo probar en
-      la PC.
-- [ ] Instalar en el reloj la versión que pide `/api/fierros/rutina` (ver
-      "Instalar y actualizar en el reloj"). Hasta entonces el reloj no sincroniza.
-- [ ] Comprobar en Anteriores → Actividad que la sincronización del reloj figure
+- [x] Commitear los dos repos y pushear.
+- [x] Desplegar: en el servidor, `git pull` y `docker compose up -d --build`. El
+      `Dockerfile` compila la web (etapa con Node 24); sin `--build` no se
+      recompila.
+- [x] Instalar en el reloj la versión que pide `/api/fierros/rutina` (ver
+      "Instalar y actualizar en el reloj").
+- [x] Comprobar en Anteriores → Actividad que la sincronización del reloj figure
       como "El reloj bajó la rutina" (la API lo deduce del User-Agent).
+- [x] Cerrar la iteración 2 en
+      `planificacion-it-2-implementacion-tecnica.md`.
 - [ ] Confirmar que el `.env` del servidor tenga
       `TZ=America/Argentina/Buenos_Aires`. El `docker-compose.yml` no lo define y
       sin eso las horas del log y del historial salen en UTC.
-- [ ] Cerrar la iteración 2 en
-      `planificacion-it-2-implementacion-tecnica.md`, como se hizo con la 1.
 
 ### Iteración 3 — Registrar
 
@@ -271,5 +271,5 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 - **Servidor:** homelab propio con la API ya corriendo.
 - **Estado:** iteración 1 con el desarrollo cerrado (2026-09-11): instalada en el
   reloj y sincronizando con la API. En validación: dos semanas de uso real en el
-  gimnasio. Iteración 2 (la web) terminada en local el 2026-09-11 y pendiente de
-  deploy.
+  gimnasio. Iteración 2 (la web) cerrada el 2026-09-11: desplegada en el homelab,
+  con el reloj sincronizando por `/api/fierros/rutina`.

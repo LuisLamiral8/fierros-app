@@ -492,3 +492,59 @@ Cada fase termina desplegada y usable.
   - "Guardar" se habilita cuando hay cambios. Salir con cambios sin guardar
     pregunta (dentro de la web con `useBlocker`; al recargar o cerrar, el
     navegador).
+
+---
+
+## 12. Cierre
+
+**Qué quedó hecho** (2026-09-11):
+
+- Web en `http://192.168.100.240:3000/fierros/`, servida por Express: rutina
+  actual por semanas con el panel del ejercicio, actualizar pegando el JSON (con
+  validación en dos pasos y vista previa), formulario para armar una rutina,
+  editar la rutina actual, rutinas anteriores con "Volver a usar esta rutina", y
+  la actividad del servidor.
+- API bajo `/api/fierros`: `rutina` (GET/POST), `rutina/validar`, `historial`,
+  `historial/:id`, `historial/:id/restaurar`, `actividad` y `registros` (vacío
+  hasta la iteración 3), con `Last-Modified` y `Cache-Control: no-cache`.
+- Log nuevo `fierros-actividad.jsonl`, con el origen de cada evento (web, reloj o
+  curl); `fierros.log` se sigue escribiendo en texto.
+- Reloj actualizado a `/api/fierros/rutina`, instalado y sincronizando: la
+  actividad lo muestra como "El reloj bajó la rutina".
+- Deploy: el `Dockerfile` compila la web en el servidor; `public/fierros/` salió
+  de git.
+- 44 tests de Vitest sobre lo que tiene lógica.
+
+**Qué cambió respecto del plan:**
+
+- **La ruta vieja del reloj no quedó como alias:** la fase 0 y la 1 salieron
+  juntas, así que la API pasó directo a `/api/fierros` (sección 4.3).
+- **El build dejó de commitearse**: lo compila Docker en el deploy. El plan decía
+  commitear `public/fierros/`.
+- **El formulario arranca vacío** y editar la rutina actual quedó como pantalla
+  propia (`/fierros/editar`), con su prototipo
+  (`assets/fierros_web_con_editar.html`). El plan tenía un solo formulario que
+  precargaba la actual.
+- **El peso salió del formulario** (se levanta en el gimnasio), los ejercicios se
+  ordenan por letra al guardar y hay un tope de 5 semanas.
+- **Router "de datos"** de React Router, para poder avisar cuando se sale con
+  cambios sin guardar.
+- **El historial se nombra por la fecha de carga** de cada rutina, no por la de
+  su reemplazo.
+
+**Riesgos, cómo terminaron:**
+
+- Compilar la web dentro de Docker (binarios nativos para Alpine): salió bien en
+  el primer deploy.
+- Reconocer al reloj por el User-Agent: verificado en producción.
+- Caché del navegador: apareció de verdad (la web mostraba la rutina vieja) y se
+  resolvió con `Cache-Control: no-cache` en la API y pidiendo sin caché desde la
+  web.
+
+**Pendiente:** confirmar `TZ` en el `.env` del servidor; si no está, las horas del
+log y de los nombres del historial salen en UTC.
+
+**Quedó para después:** responsive, login y usuarios, el tope de 5 semanas
+también en la API, y la iteración 3 (registrar los pesos desde el reloj). La web
+ya lee `/registros`: cuando el reloj los mande, "Levanté" y el panel del
+ejercicio se llenan solos.
