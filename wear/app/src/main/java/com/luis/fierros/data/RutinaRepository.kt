@@ -17,8 +17,12 @@ sealed interface CargaRutina {
 }
 
 sealed interface ResultadoSync {
-    /** No se pudieron subir los registros, asi que no se bajo la rutina nueva. */
-    data class SubidaFallida(val pendientes: Int) : ResultadoSync
+    /**
+     * No se pudieron subir los registros, asi que tampoco se bajo la rutina.
+     * [codigo] es el HTTP con el que contesto el servidor, o null si no se pudo conectar:
+     * son dos problemas distintos y se resuelven distinto.
+     */
+    data class SubidaFallida(val pendientes: Int, val codigo: Int?) : ResultadoSync
 
     data class Ok(val mesociclo: Mesociclo) : ResultadoSync
     data object SinConexion : ResultadoSync

@@ -40,6 +40,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -534,6 +535,71 @@ fun AvisoInferior(
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 modifier = Modifier.widthIn(max = du(290f)),
+            )
+        }
+    }
+}
+
+
+/**
+ * La subida fallo, asi que tampoco se bajo la rutina. Es el precio de subir primero, y esta
+ * pantalla lo explica en vez de dejar un cartel que se va solo.
+ *
+ * "Bajar igual" es la salida manual: actualiza la rutina dejando los registros pendientes, con
+ * el riesgo de que pasen a describir otros ejercicios. Nunca es el camino por defecto.
+ */
+@Composable
+fun PantallaConflicto(
+    pendientes: Int,
+    codigo: Int?,
+    onReintentar: () -> Unit,
+    onBajarIgual: () -> Unit,
+) {
+    ScreenScaffold {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(horizontal = du(52f)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(du(12f), Alignment.CenterVertically),
+        ) {
+            Text(
+                text = pluralStringResource(R.plurals.conflicto_titulo, pendientes, pendientes),
+                fontSize = duSp(18f),
+                lineHeight = duSp(23f),
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.error,
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text =
+                    if (codigo == null) {
+                        stringResource(R.string.conflicto_sin_conexion)
+                    } else {
+                        stringResource(R.string.conflicto_rechazo, codigo)
+                    },
+                fontSize = duSp(16f),
+                lineHeight = duSp(22f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+            )
+            Button(
+                onClick = onReintentar,
+                modifier = Modifier.fillMaxWidth().heightIn(min = du(48f)),
+                shape = RoundedCornerShape(50),
+                contentPadding = PaddingValues(horizontal = du(30f), vertical = du(4f)),
+            ) {
+                Text(
+                    text = stringResource(R.string.reintentar),
+                    fontSize = duSp(17f),
+                    fontWeight = FontWeight.Medium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            Text(
+                text = stringResource(R.string.bajar_igual),
+                fontSize = duSp(16f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.clickable(onClick = onBajarIgual).padding(du(6f)),
             )
         }
     }

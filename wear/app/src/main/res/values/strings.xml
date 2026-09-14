@@ -46,4 +46,12 @@
         <item quantity="one">No pude subir tu registro</item>
         <item quantity="other">No pude subir tus %1$d registros</item>
     </plurals>
+    <plurals name="conflicto_titulo">
+        <item quantity="one">No pude subir tu registro</item>
+        <item quantity="other">No pude subir tus %1$d registros</item>
+    </plurals>
+    <string name="conflicto_sin_conexion">No pude conectarme al servidor. Tampoco actualicé la rutina, así que no se perdió nada.</string>
+    <string name="conflicto_rechazo">El servidor respondió con un error (%1$d). Tampoco actualicé la rutina, así que no se perdió nada.</string>
+    <string name="reintentar">Reintentar</string>
+    <string name="bajar_igual">Bajar igual</string>
 </resources>

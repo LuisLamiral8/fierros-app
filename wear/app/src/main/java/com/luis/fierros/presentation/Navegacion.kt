@@ -92,6 +92,16 @@ fun WearApp(viewModel: RutinaViewModel) {
 private fun Navegacion(viewModel: RutinaViewModel) {
     val navController = rememberSwipeDismissableNavController()
 
+    // Si no se pudieron subir los registros hay algo que decidir, y eso no entra en un cartel
+    // que se va solo: se abre la pantalla de conflicto.
+    val fallo = (viewModel.sincronizacion as? EstadoSincronizacion.Terminada)?.resultado
+    LaunchedEffect(fallo) {
+        if (fallo is ResultadoSync.SubidaFallida) {
+            viewModel.olvidarResultado()
+            navController.navigate("conflicto")
+        }
+    }
+
     SwipeDismissableNavHost(navController = navController, startDestination = "semanas") {
         composable("semanas") {
             val titulo = stringResource(R.string.app_name)
@@ -136,6 +146,23 @@ private fun Navegacion(viewModel: RutinaViewModel) {
                     Opcion(stringResource(R.string.servidor)),
                 ),
                 onClick = { i -> if (i == 0) viewModel.sincronizar() else navController.navigate("servidor") },
+            )
+        }
+
+
+        // Se llega sola cuando falla la subida (ver el LaunchedEffect de arriba).
+        composable("conflicto") {
+            PantallaConflicto(
+                pendientes = viewModel.fallaSubida?.pendientes ?: viewModel.pendientes,
+                codigo = viewModel.fallaSubida?.codigo,
+                onReintentar = {
+                    navController.popBackStack()
+                    viewModel.sincronizar()
+                },
+                onBajarIgual = {
+                    navController.popBackStack()
+                    viewModel.bajarIgual()
+                },
             )
         }
 
@@ -268,11 +295,11 @@ private fun textoBotonSincronizar(estado: EstadoSincronizacion): String =
 
 /** Lo que dice el cartel de abajo cuando termina una sincronización. */
 @Composable
-private fun textoResultado(resultado: ResultadoSync): String =
+private fun textoResultado(resultado: ResultadoSync): String? =
     when (resultado) {
         is ResultadoSync.Ok -> stringResource(R.string.sync_ok)
-        is ResultadoSync.SubidaFallida ->
-            pluralStringResource(R.plurals.sync_subida_fallida, resultado.pendientes, resultado.pendientes)
+        // La subida fallida tiene pantalla propia: no va cartel.
+        is ResultadoSync.SubidaFallida -> null
         ResultadoSync.SinConexion -> stringResource(R.string.sync_sin_conexion)
         ResultadoSync.SinRutinaEnServidor -> stringResource(R.string.sync_sin_rutina)
         is ResultadoSync.ErrorServidor -> stringResource(R.string.sync_error_servidor, resultado.codigo)

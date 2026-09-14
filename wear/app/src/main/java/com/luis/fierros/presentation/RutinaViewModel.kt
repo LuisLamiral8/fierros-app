@@ -86,6 +86,10 @@ class RutinaViewModel(application: Application) : AndroidViewModel(application) 
     var sincronizacion by mutableStateOf<EstadoSincronizacion>(EstadoSincronizacion.Inactiva)
         private set
 
+    /** La ultima subida que fallo, para que la pantalla de conflicto sepa que paso. */
+    var fallaSubida by mutableStateOf<ResultadoSync.SubidaFallida?>(null)
+        private set
+
     /** La URL con la que se sincroniza: la elegida en Ajustes o la de por defecto. */
     var urlServidor by mutableStateOf(BuildConfig.API_URL_POR_DEFECTO)
         private set
@@ -133,14 +137,37 @@ class RutinaViewModel(application: Application) : AndroidViewModel(application) 
                     ApiFierros.subirRegistros(url, RegistroRepository.aJsonParaSubir(pendientes))
                 }
                 if (subida !is RespuestaApi.Ok) {
-                    sincronizacion =
-                        EstadoSincronizacion.Terminada(ResultadoSync.SubidaFallida(pendientes.size))
+                    // Si contesto con un codigo, el servidor esta vivo y rechazo algo; si no,
+                    // directamente no se llego hasta el.
+                    val falla = ResultadoSync.SubidaFallida(
+                        pendientes = pendientes.size,
+                        codigo = (subida as? RespuestaApi.Error)?.codigo,
+                    )
+                    fallaSubida = falla
+                    sincronizacion = EstadoSincronizacion.Terminada(falla)
                     return@launch
                 }
+                fallaSubida = null
                 withContext(Dispatchers.IO) { RegistroRepository.marcarSubidos(app, pendientes) }
                     ?.let { registros = it }
             }
 
+            val resultado = withContext(Dispatchers.IO) { RutinaRepository.sincronizar(app, url) }
+            if (resultado is ResultadoSync.Ok) carga = CargaRutina.Ok(resultado.mesociclo)
+            sincronizacion = EstadoSincronizacion.Terminada(resultado)
+        }
+    }
+
+
+    /**
+     * Salida manual del conflicto: baja la rutina sin subir. Los registros quedan pendientes y
+     * pueden terminar apuntando a otros ejercicios, por eso no es el camino por defecto.
+     */
+    fun bajarIgual() {
+        if (sincronizacion == EstadoSincronizacion.EnCurso) return
+        sincronizacion = EstadoSincronizacion.EnCurso
+        viewModelScope.launch {
+            val url = withContext(Dispatchers.IO) { ServidorRepository.urlActual(app) }
             val resultado = withContext(Dispatchers.IO) { RutinaRepository.sincronizar(app, url) }
             if (resultado is ResultadoSync.Ok) carga = CargaRutina.Ok(resultado.mesociclo)
             sincronizacion = EstadoSincronizacion.Terminada(resultado)
