@@ -142,9 +142,12 @@ fun PantallaRegistrar(
                         Picker(
                             state = estadoEntero,
                             contentDescription = { "Kilos" },
-                            modifier = Modifier.fillMaxWidth().height(du(156f)).clickable { rueda = 0 },
+                            modifier = Modifier.fillMaxWidth().height(du(172f)).clickable { rueda = 0 },
                             userScrollEnabled = rueda == 0,
-                            gradientRatio = 0f,
+                            verticalSpacing = du(20f),
+                            // El degradé difumina las filas que asoman en los bordes: sin esto quedan cortadas al medio.
+                            gradientRatio = 0.3f,
+                            gradientColor = PISTA,
                         ) { indice ->
                             Valor(
                                 texto = indice.toString(),
@@ -169,9 +172,12 @@ fun PantallaRegistrar(
                         Picker(
                             state = estadoDecimal,
                             contentDescription = { "Decimal" },
-                            modifier = Modifier.fillMaxWidth().height(du(124f)).clickable { rueda = 1 },
+                            modifier = Modifier.fillMaxWidth().height(du(172f)).clickable { rueda = 1 },
                             userScrollEnabled = rueda == 1,
-                            gradientRatio = 0f,
+                            verticalSpacing = du(20f),
+                            // El degradé difumina las filas que asoman en los bordes: sin esto quedan cortadas al medio.
+                            gradientRatio = 0.3f,
+                            gradientColor = PISTA,
                         ) { indice ->
                             Valor(
                                 texto = DECIMALES[indice],
