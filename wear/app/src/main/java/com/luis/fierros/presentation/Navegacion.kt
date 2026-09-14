@@ -14,6 +14,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
@@ -120,10 +121,18 @@ private fun Navegacion(viewModel: RutinaViewModel) {
         }
 
         composable("ajustes") {
+            // Con registros esperando, sincronizar pasa a ser la acción principal: si no me
+            // entero de que hay pendientes, se juntan y el registro no sirve para nada.
+            val pendientes = viewModel.pendientes
             PantallaLista(
                 titulo = stringResource(R.string.ajustes),
+                chip = if (pendientes == 0) {
+                    null
+                } else {
+                    pluralStringResource(R.plurals.registros_pendientes, pendientes, pendientes)
+                },
                 opciones = listOf(
-                    Opcion(textoBotonSincronizar(viewModel.sincronizacion)),
+                    Opcion(textoBotonSincronizar(viewModel.sincronizacion), principal = pendientes > 0),
                     Opcion(stringResource(R.string.servidor)),
                 ),
                 onClick = { i -> if (i == 0) viewModel.sincronizar() else navController.navigate("servidor") },
@@ -172,6 +181,10 @@ private fun Navegacion(viewModel: RutinaViewModel) {
                             texto = ejercicio.nombre,
                             etiqueta = ejercicio.letra,
                             grupo = bloque.takeIf { (cuantosPorBloque[it] ?: 0) > 1 },
+                            // En la lista va solo el número: el "kg" no entra y se sobreentiende.
+                            registrado = viewModel
+                                .registradoEn(semana.numero, dia.numero, ejercicio.letra)
+                                ?.removeSuffix(" kg"),
                         )
                     },
                     anchoEtiqueta = 28f,

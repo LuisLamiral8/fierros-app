@@ -77,6 +77,8 @@ data class Opcion(
     val etiqueta: String? = null,
     val grupo: String? = null,
     val principal: Boolean = false,
+    /** Lo que ya anoté en este ejercicio; si viene, la fila lleva el valor y un tilde. */
+    val registrado: String? = null,
 )
 
 /**
@@ -97,6 +99,8 @@ fun PantallaLista(
     padLateral: Float = 30f,
     padBoton: Float = 18f,
     mensaje: String? = null,
+    /** Aviso corto arriba de la lista, en una pastilla (los registros sin subir, en Ajustes). */
+    chip: String? = null,
     onClick: (indice: Int) -> Unit = {},
     botonInferior: (@Composable BoxScope.() -> Unit)? = null,
 ) {
@@ -125,6 +129,24 @@ fun PantallaLista(
                         .padding(top = du(22f), bottom = du(4f))
                         .transformedHeight(this, transformationSpec),
                 )
+            }
+            if (chip != null) {
+                item {
+                    Box(Modifier.fillMaxWidth().padding(bottom = du(6f)), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = chip,
+                            fontSize = duSp(16f),
+                            lineHeight = duSp(21f),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.surfaceContainerHigh,
+                                    RoundedCornerShape(du(16f)),
+                                )
+                                .padding(horizontal = du(12f), vertical = du(8f)),
+                        )
+                    }
+                }
             }
             if (mensaje != null) {
                 item {
@@ -186,6 +208,23 @@ fun PantallaLista(
                                 lineHeight = duSp(tamTexto * 1.15f),
                                 modifier = Modifier.weight(1f),
                             )
+                            // Lo ya registrado: el valor donde entra, y el tilde siempre. Sirve
+                            // para saber por dónde voy sin abrir ejercicio por ejercicio.
+                            if (opcion.registrado != null) {
+                                Text(
+                                    text = opcion.registrado,
+                                    fontSize = duSp(15f),
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                                Spacer(Modifier.width(du(8f)))
+                                Icon(
+                                    Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(du(16f)),
+                                )
+                            }
                         } else {
                             // Sin etiqueta el texto va centrado (la lista de semanas).
                             Text(

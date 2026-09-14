@@ -13,12 +13,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,30 +41,30 @@ import com.luis.fierros.data.formatearPeso
 import com.luis.fierros.data.kilosDe
 import com.luis.fierros.presentation.theme.FierrosTheme
 import kotlin.math.abs
+import kotlin.math.floor
 import kotlin.math.roundToInt
 
-// El peso se elige de a 0,25 kg: es el salto más chico que existe en discos y mancuernas, así
-// que con ese paso entran todos los pesos posibles y no hace falta teclado.
-private const val PASO = 0.25
-private const val MAX_KILOS = 250.0
-private const val OPCIONES = (MAX_KILOS / PASO).toInt() + 1
+// El peso se arma con dos ruedas: el entero de 1 en 1 y el decimal de 0,25 en 0,25. Con una
+// sola rueda de 0,25, ir de 32,5 a 40 eran 30 arrastres; así son 8 y el decimal ni se toca.
+private const val MAX_ENTERO = 250
+private val DECIMALES = listOf("00", "25", "50", "75")
 
-private fun kilosDeIndice(indice: Int): Double = indice * PASO
-
-private fun indiceDeKilos(kilos: Double): Int =
-    (kilos / PASO).roundToInt().coerceIn(0, OPCIONES - 1)
-
-// Los dos grises de los vecinos salen de la maqueta: el de al lado se lee, el de más afuera
-// apenas se insinúa, para que quede claro hacia dónde se mueve la rueda.
-private val VECINO_CERCA = Color(0xFF6F6A78)
-private val VECINO_LEJOS = Color(0xFF4E4A57)
+// Colores de la maqueta v2 (assets/diseño-wearos-fierros-v2.html).
+private val PISTA = Color(0xFF141317)
+private val SELECCION = Color(0xFF26242B)
+private val SELECCION_ACTIVA = Color(0xFF2B2930)
+private val VECINO_CERCA = Color(0xFF928C9B)
+private val VECINO_LEJOS = Color(0xFF6F6A78)
 
 /**
- * Cargar el peso levantado, con una rueda. Abre centrada en el último registro: si hice lo
+ * Cargar el peso levantado, con dos ruedas. Abre centrada en el último registro: si hice lo
  * mismo que la vez pasada, alcanza con Guardar.
  *
- * Se mueve con el dedo (el Watch8 40 mm no tiene corona ni bisel giratorio); el gesto se toma
- * en toda la pantalla, no solo sobre la rueda, así el dedo nunca tapa el número.
+ * Las dos pistas van desfasadas media fila y con la coma fija en el medio, a propósito: si las
+ * filas quedaran alineadas, los vecinos se leerían como números completos ("31 ,25") que no son
+ * valores a los que se pueda llegar moviendo una sola rueda.
+ *
+ * Se mueve con el dedo (el Watch8 40 mm no tiene corona ni bisel giratorio).
  */
 @Composable
 fun PantallaRegistrar(
@@ -66,29 +74,55 @@ fun PantallaRegistrar(
     plan: String? = null,
     onGuardar: (Double) -> Unit,
 ) {
-    val estado = rememberPickerState(
-        initialNumberOfOptions = OPCIONES,
-        initiallySelectedIndex = indiceDeKilos(kilosIniciales),
+    val enteroInicial = floor(kilosIniciales).toInt().coerceIn(0, MAX_ENTERO)
+    val decimalInicial = ((kilosIniciales - enteroInicial) / 0.25).roundToInt().coerceIn(0, 3)
+
+    val estadoEntero = rememberPickerState(
+        initialNumberOfOptions = MAX_ENTERO + 1,
+        initiallySelectedIndex = enteroInicial,
         // Los kilos no dan la vuelta: después de 250 no vuelve a empezar en 0.
         shouldRepeatOptions = false,
     )
-    val kilos = kilosDeIndice(estado.selectedOptionIndex)
-    val moviendo = estado.isScrollInProgress
+    val estadoDecimal = rememberPickerState(
+        initialNumberOfOptions = DECIMALES.size,
+        initiallySelectedIndex = decimalInicial,
+        // Son cuatro y dan la vuelta: de ,75 se pasa a ,00 en un solo paso.
+        shouldRepeatOptions = true,
+    )
+    // 0 = la rueda del entero, 1 = la del decimal. Arranca en el entero, que es lo que cambia.
+    var rueda by remember { mutableIntStateOf(0) }
+    val enMando = if (rueda == 0) estadoEntero else estadoDecimal
+
+    // Al dar la vuelta con los decimales se acarrea al entero: de ,75 a ,00 suma 1 kg.
+    var decimalPrevio by remember { mutableIntStateOf(decimalInicial) }
+    LaunchedEffect(estadoDecimal.selectedOptionIndex) {
+        val actual = estadoDecimal.selectedOptionIndex
+        val previo = decimalPrevio
+        val entero = estadoEntero.selectedOptionIndex
+        if (previo == DECIMALES.lastIndex && actual == 0 && entero < MAX_ENTERO) {
+            estadoEntero.scrollToOption(entero + 1)
+        } else if (previo == 0 && actual == DECIMALES.lastIndex && entero > 0) {
+            estadoEntero.scrollToOption(entero - 1)
+        }
+        decimalPrevio = actual
+    }
+
+    val kilos = estadoEntero.selectedOptionIndex + estadoDecimal.selectedOptionIndex * 0.25
+    val moviendo = estadoEntero.isScrollInProgress || estadoDecimal.isScrollInProgress
     val diferencia = ultimo?.let { kilosDe(it) }?.let { kilos - it }
+    val haptica = LocalHapticFeedback.current
 
     ScreenScaffold {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .scrollable(state = estado, orientation = Orientation.Vertical, reverseDirection = true),
+                .scrollable(state = enMando, orientation = Orientation.Vertical, reverseDirection = true),
         ) {
             Column(
                 // El hueco de abajo es para la franja de Guardar, que va por encima.
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = du(30f), end = du(30f), bottom = du(44f)),
+                modifier = Modifier.fillMaxSize().padding(bottom = du(40f)),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(du(2f), Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(du(4f), Alignment.CenterVertically),
             ) {
                 Text(
                     text = titulo,
@@ -97,94 +131,92 @@ fun PantallaRegistrar(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    modifier = Modifier.padding(bottom = du(6f)),
+                    modifier = Modifier.padding(horizontal = du(30f)),
                 )
 
-                Picker(
-                    state = estado,
-                    contentDescription = { formatearPeso(kilos) },
-                    // Alto justo para cinco valores: el elegido y dos a cada lado, como la maqueta.
-                    modifier = Modifier.fillMaxWidth().height(du(150f)),
-                    // La maqueta no difumina los extremos: los apaga con color.
-                    gradientRatio = 0f,
-                ) { indice ->
-                    val distancia = abs(indice - estado.selectedOptionIndex)
-                    val texto = formatearPeso(kilosDeIndice(indice)).removeSuffix(" kg")
-                    when (distancia) {
-                        0 -> Row(
-                            modifier = Modifier
-                                .background(
-                                    if (moviendo) MaterialTheme.colorScheme.surfaceContainerHigh
-                                    else MaterialTheme.colorScheme.surfaceContainer,
-                                    RoundedCornerShape(50),
-                                )
-                                .then(
-                                    if (!moviendo) Modifier
-                                    else Modifier.border(
-                                        du(1f),
-                                        MaterialTheme.colorScheme.primary,
-                                        RoundedCornerShape(50),
-                                    )
-                                )
-                                .padding(horizontal = du(22f), vertical = du(4f)),
-                            verticalAlignment = Alignment.Bottom,
-                        ) {
-                            Text(
-                                text = texto,
-                                fontSize = duSp(46f),
-                                lineHeight = duSp(48f),
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            Text(
-                                text = stringResource(R.string.kilos),
-                                fontSize = duSp(16f),
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(start = du(6f), bottom = du(6f)),
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(du(10f)),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Pista(ancho = 92f, activa = rueda == 0, desfase = 0f) {
+                        Picker(
+                            state = estadoEntero,
+                            contentDescription = { "Kilos" },
+                            modifier = Modifier.fillMaxWidth().height(du(156f)).clickable { rueda = 0 },
+                            userScrollEnabled = rueda == 0,
+                            gradientRatio = 0f,
+                        ) { indice ->
+                            Valor(
+                                texto = indice.toString(),
+                                distancia = abs(indice - estadoEntero.selectedOptionIndex),
+                                activa = rueda == 0,
                             )
                         }
-                        1 -> Text(text = texto, fontSize = duSp(27f), lineHeight = duSp(34f), color = VECINO_CERCA)
-                        else -> Text(text = texto, fontSize = duSp(22f), lineHeight = duSp(29f), color = VECINO_LEJOS)
                     }
-                }
 
-                // Mientras se mueve, lo útil es cuánto cambió respecto de la vez pasada; en
-                // reposo, contra qué estoy comparando.
-                val pie = when {
-                    moviendo && diferencia != null && diferencia != 0.0 -> {
-                        val signo = if (diferencia > 0) "+" else "−"
-                        stringResource(R.string.vs_ultimo, signo + formatearPeso(abs(diferencia)))
-                    }
-                    ultimo != null && plan != null ->
-                        stringResource(R.string.ultimo_y_plan, ultimo.removeSuffix(" kg"), plan.removeSuffix(" kg"))
-                    ultimo != null -> stringResource(R.string.ultimo_suelto, ultimo.removeSuffix(" kg"))
-                    else -> null
-                }
-                if (pie != null) {
+                    // La coma no se mueve: es el ancla que separa las dos pistas.
                     Text(
-                        text = pie,
-                        fontSize = duSp(15f),
-                        fontWeight = if (moviendo) FontWeight.Medium else FontWeight.Normal,
-                        color =
-                            if (moviendo && diferencia != null && diferencia != 0.0) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = du(8f)),
+                        text = ",",
+                        fontSize = duSp(38f),
+                        fontWeight = FontWeight.Medium,
+                        color = if (rueda == 1) VECINO_CERCA else MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(top = du(18f)),
                     )
-                }
-            }
 
-            // La marca del costado dice que la rueda se mueve; se agranda mientras gira.
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = du(if (moviendo) 4f else 6f))
-                    .size(
-                        width = du(if (moviendo) 6f else 4f),
-                        height = du(if (moviendo) 104f else 70f),
-                    )
-                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(50)),
-            )
+                    // Media fila más abajo que la otra pista, para que las filas no se lean en
+                    // horizontal como si fueran un número completo.
+                    Pista(ancho = 104f, activa = rueda == 1, desfase = 26f) {
+                        Picker(
+                            state = estadoDecimal,
+                            contentDescription = { "Decimal" },
+                            modifier = Modifier.fillMaxWidth().height(du(124f)).clickable { rueda = 1 },
+                            userScrollEnabled = rueda == 1,
+                            gradientRatio = 0f,
+                        ) { indice ->
+                            Valor(
+                                texto = DECIMALES[indice],
+                                distancia = distanciaCircular(
+                                    indice,
+                                    estadoDecimal.selectedOptionIndex,
+                                    DECIMALES.size,
+                                ),
+                                activa = rueda == 1,
+                            )
+                        }
+                    }
+                }
+
+                // En reposo, contra qué estoy comparando. Moviendo, cuánto vale y cuánto cambió.
+                val pie = when {
+                    moviendo && diferencia != null -> {
+                        val signo = if (diferencia >= 0) "+" else "−"
+                        stringResource(
+                            R.string.pie_editando,
+                            formatearPeso(kilos),
+                            signo + formatearPeso(abs(diferencia)).removeSuffix(" kg"),
+                        )
+                    }
+                    moviendo -> formatearPeso(kilos)
+                    ultimo != null && plan != null ->
+                        stringResource(
+                            R.string.pie_con_plan,
+                            ultimo.removeSuffix(" kg"),
+                            plan.removeSuffix(" kg"),
+                        )
+                    ultimo != null -> stringResource(R.string.pie_sin_plan, ultimo.removeSuffix(" kg"))
+                    else -> stringResource(R.string.kilos)
+                }
+                Text(
+                    text = pie,
+                    fontSize = duSp(if (moviendo) 16f else 15f),
+                    fontWeight = if (moviendo) FontWeight.Medium else FontWeight.Normal,
+                    color =
+                        if (moviendo) MaterialTheme.colorScheme.primary
+                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = du(24f)),
+                )
+            }
 
             // "Guardar" no es un botón de borde: la maqueta lo dibuja como la misma franja en U
             // que los avisos, pegada abajo y recortada por la curva de la pantalla.
@@ -196,7 +228,10 @@ fun PantallaRegistrar(
                         MaterialTheme.colorScheme.surfaceContainerHigh,
                         RoundedCornerShape(topStart = du(24f), topEnd = du(24f)),
                     )
-                    .clickable { onGuardar(kilos) }
+                    .clickable {
+                        haptica.performHapticFeedback(HapticFeedbackType.LongPress)
+                        onGuardar(kilos)
+                    }
                     .padding(top = du(10f), bottom = du(26f)),
                 contentAlignment = Alignment.TopCenter,
             ) {
@@ -208,6 +243,63 @@ fun PantallaRegistrar(
             }
         }
     }
+}
+
+/** La pista de una rueda: el fondo redondeado. La que manda toma el borde de acento. */
+@Composable
+private fun Pista(
+    ancho: Float,
+    activa: Boolean,
+    desfase: Float,
+    contenido: @Composable () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .padding(top = du(desfase))
+            .width(du(ancho))
+            .alpha(if (activa) 1f else 0.5f)
+            .background(PISTA, RoundedCornerShape(du(22f)))
+            .then(
+                if (!activa) {
+                    Modifier
+                } else {
+                    Modifier.border(du(1f), MaterialTheme.colorScheme.primary, RoundedCornerShape(du(22f)))
+                },
+            )
+            .padding(vertical = du(6f)),
+    ) {
+        contenido()
+    }
+}
+
+/** Un valor de la rueda: el elegido en su pastilla, los vecinos apagándose por distancia. */
+@Composable
+private fun Valor(texto: String, distancia: Int, activa: Boolean) {
+    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        when (distancia) {
+            0 -> Text(
+                text = texto,
+                fontSize = duSp(42f),
+                lineHeight = duSp(46f),
+                fontWeight = FontWeight.Medium,
+                color = if (activa) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .background(
+                        if (activa) SELECCION_ACTIVA else SELECCION,
+                        RoundedCornerShape(du(12f)),
+                    )
+                    .padding(horizontal = du(14f), vertical = du(3f)),
+            )
+            1 -> Text(texto, fontSize = duSp(27f), lineHeight = duSp(32f), color = VECINO_CERCA)
+            else -> Text(texto, fontSize = duSp(23f), lineHeight = duSp(29f), color = VECINO_LEJOS)
+        }
+    }
+}
+
+/** Distancia en una rueda que da la vuelta: entre ,75 y ,00 hay un paso, no tres. */
+private fun distanciaCircular(indice: Int, seleccionado: Int, total: Int): Int {
+    val bruta = abs(indice - seleccionado) % total
+    return minOf(bruta, total - bruta)
 }
 
 @WearPreviewDevices

@@ -18,6 +18,10 @@
     <string name="ultimo_suelto">último %1$s</string>
     <string name="vs_ultimo">%1$s vs. el último</string>
     <string name="kilos">kg</string>
+    <plurals name="registros_pendientes">
+        <item quantity="one">%1$d registro sin subir</item>
+        <item quantity="other">%1$d registros sin subir</item>
+    </plurals>
     <string name="ajustes">Ajustes</string>
     <string name="servidor">Servidor</string>
     <string name="cambiar">Cambiar</string>
@@ -34,4 +38,8 @@
     <string name="sync_error_servidor">Error del servidor (%1$d)</string>
     <string name="sync_invalida">Rutina inválida en el servidor</string>
     <string name="sync_error_guardar">No se pudo guardar la rutina</string>
+    <!-- Pie de la pantalla de registrar (ver assets/diseno-wearos-fierros-v2.html). -->
+    <string name="pie_con_plan">kg · último %1$s · plan %2$s</string>
+    <string name="pie_sin_plan">kg · último %1$s</string>
+    <string name="pie_editando">%1$s · %2$s vs. el último</string>
 </resources>
