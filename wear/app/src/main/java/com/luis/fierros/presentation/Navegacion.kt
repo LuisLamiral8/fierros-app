@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.wear.compose.material3.AppScaffold
+import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
@@ -101,7 +102,9 @@ private fun Navegacion(viewModel: RutinaViewModel) {
                     PantallaLista(
                         titulo = titulo,
                         mensaje = motivo,
-                        opciones = listOf(Opcion(textoBotonSincronizar(viewModel.sincronizacion))),
+                        opciones = listOf(
+                            Opcion(textoBotonSincronizar(viewModel.sincronizacion), principal = true),
+                        ),
                         onClick = { viewModel.sincronizar() },
                         botonInferior = { BotonAjustes { navController.navigate("ajustes") } },
                     )
@@ -141,7 +144,9 @@ private fun Navegacion(viewModel: RutinaViewModel) {
                         val numero = stringResource(R.string.dia, dia.numero)
                         if (dia.nombre == null) Opcion(numero) else Opcion(dia.nombre, etiqueta = numero)
                     },
-                    anchoEtiqueta = 60.dp,
+                    anchoEtiqueta = 44f,
+                    tamTexto = 17f,
+                    padLateral = 26f,
                     onClick = { i ->
                         navController.navigate("ejercicios/${semana.numero}/${semana.dias[i].numero}")
                     },
@@ -155,9 +160,25 @@ private fun Navegacion(viewModel: RutinaViewModel) {
             if (semana == null || dia == null) {
                 NoEncontrado()
             } else {
+                // "A1" y "A2" son el bloque "A": una superserie. Se agrupan solo si el bloque
+                // tiene más de un ejercicio; una "B" sola no lleva barra.
+                val cuantosPorBloque = dia.ejercicios.groupingBy { bloqueDe(it.letra) }.eachCount()
                 PantallaLista(
                     titulo = stringResource(R.string.titulo_dia, semana.numero, dia.numero),
-                    opciones = dia.ejercicios.map { Opcion(it.nombre, etiqueta = it.letra) },
+                    opciones = dia.ejercicios.map { ejercicio ->
+                        val bloque = bloqueDe(ejercicio.letra)
+                        Opcion(
+                            texto = ejercicio.nombre,
+                            etiqueta = ejercicio.letra,
+                            grupo = bloque.takeIf { (cuantosPorBloque[it] ?: 0) > 1 },
+                        )
+                    },
+                    anchoEtiqueta = 28f,
+                    colorEtiqueta = MaterialTheme.colorScheme.primary,
+                    tamTitulo = 16f,
+                    tamTexto = 16f,
+                    altoBoton = 48f,
+                    padLateral = 24f,
                     onClick = { i -> navController.navigate("ejercicio/${semana.numero}/${dia.numero}/$i") },
                 )
             }
@@ -214,3 +235,6 @@ private fun NoEncontrado() {
 // Los parámetros de ruta llegan como String, igual que un @PathVariable sin conversión.
 private fun NavBackStackEntry.int(nombre: String): Int? =
     arguments?.getString(nombre)?.toIntOrNull()
+
+/** El bloque al que pertenece una letra: "A1" y "A2" son del bloque "A"; "B" es "B". */
+private fun bloqueDe(letra: String): String = letra.takeWhile { !it.isDigit() }
