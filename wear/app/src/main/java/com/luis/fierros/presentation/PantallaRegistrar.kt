@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Picker
 import androidx.wear.compose.material3.ScreenScaffold
@@ -55,6 +56,14 @@ private val SELECCION = Color(0xFF26242B)
 private val SELECCION_ACTIVA = Color(0xFF2B2930)
 private val VECINO_CERCA = Color(0xFF928C9B)
 private val VECINO_LEJOS = Color(0xFF6F6A78)
+
+/**
+ * Alto de cada fila de las ruedas, fijo a proposito. Si cada opcion midiera segun su texto, la
+ * elegida (42 sp mas su pastilla) seria mucho mas alta que las vecinas, y al mover la seleccion
+ * cambiaria la geometria de la rueda: por eso algunos numeros no quedaban centrados.
+ */
+private val ALTO_FILA: Dp
+    @Composable get() = du(52f)
 
 /**
  * Cargar el peso levantado, con dos ruedas. Abre centrada en el último registro: si hice lo
@@ -120,7 +129,7 @@ fun PantallaRegistrar(
         ) {
             Column(
                 // El hueco de abajo es para la franja de Guardar, que va por encima.
-                modifier = Modifier.fillMaxSize().padding(bottom = du(40f)),
+                modifier = Modifier.fillMaxSize().padding(top = du(36f), bottom = du(66f)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(du(4f), Alignment.CenterVertically),
             ) {
@@ -142,9 +151,9 @@ fun PantallaRegistrar(
                         Picker(
                             state = estadoEntero,
                             contentDescription = { "Kilos" },
-                            modifier = Modifier.fillMaxWidth().height(du(172f)).clickable { rueda = 0 },
+                            modifier = Modifier.fillMaxWidth().height(du(180f)).clickable { rueda = 0 },
                             userScrollEnabled = rueda == 0,
-                            verticalSpacing = du(20f),
+                            verticalSpacing = du(8f),
                             // El degradé difumina las filas que asoman en los bordes: sin esto quedan cortadas al medio.
                             gradientRatio = 0.3f,
                             gradientColor = PISTA,
@@ -163,18 +172,15 @@ fun PantallaRegistrar(
                         fontSize = duSp(38f),
                         fontWeight = FontWeight.Medium,
                         color = if (rueda == 1) VECINO_CERCA else MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(top = du(18f)),
                     )
 
-                    // Media fila más abajo que la otra pista, para que las filas no se lean en
-                    // horizontal como si fueran un número completo.
-                    Pista(ancho = 104f, activa = rueda == 1, desfase = 26f) {
+                    Pista(ancho = 104f, activa = rueda == 1, desfase = 0f) {
                         Picker(
                             state = estadoDecimal,
                             contentDescription = { "Decimal" },
-                            modifier = Modifier.fillMaxWidth().height(du(172f)).clickable { rueda = 1 },
+                            modifier = Modifier.fillMaxWidth().height(du(180f)).clickable { rueda = 1 },
                             userScrollEnabled = rueda == 1,
-                            verticalSpacing = du(20f),
+                            verticalSpacing = du(8f),
                             // El degradé difumina las filas que asoman en los bordes: sin esto quedan cortadas al medio.
                             gradientRatio = 0.3f,
                             gradientColor = PISTA,
@@ -281,7 +287,7 @@ private fun Pista(
 /** Un valor de la rueda: el elegido en su pastilla, los vecinos apagándose por distancia. */
 @Composable
 private fun Valor(texto: String, distancia: Int, activa: Boolean) {
-    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+    Box(Modifier.fillMaxWidth().height(ALTO_FILA), contentAlignment = Alignment.Center) {
         when (distancia) {
             0 -> Text(
                 text = texto,
