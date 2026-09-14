@@ -17,6 +17,9 @@ sealed interface CargaRutina {
 }
 
 sealed interface ResultadoSync {
+    /** No se pudieron subir los registros, asi que no se bajo la rutina nueva. */
+    data class SubidaFallida(val pendientes: Int) : ResultadoSync
+
     data class Ok(val mesociclo: Mesociclo) : ResultadoSync
     data object SinConexion : ResultadoSync
     data object SinRutinaEnServidor : ResultadoSync

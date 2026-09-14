@@ -29,6 +29,16 @@ data class Registro(
     val subido: Boolean = false,
 )
 
+/** Lo que viaja al servidor: el mismo formato, sin el campo local [Registro.subido]. */
+@Serializable
+private data class RegistroApi(
+    val semana: Int,
+    val dia: Int,
+    val letra: String,
+    val peso: String,
+    val fecha: String,
+)
+
 /** 32.5 -> "32,5 kg"; 33.0 -> "33 kg". Con coma decimal, como se escribe acá. */
 fun formatearPeso(kilos: Double): String {
     val redondeado = (kilos * 100).roundToInt() / 100.0
@@ -129,4 +139,23 @@ object RegistroRepository {
 
     /** Cuántos faltan subir al servidor. */
     fun pendientes(registros: List<Registro>): Int = registros.count { !it.subido }
+
+    /** Los que todavia no viajaron al servidor. */
+    fun pendientesDe(registros: List<Registro>): List<Registro> = registros.filter { !it.subido }
+
+    /** El cuerpo del POST: sin "subido", que es un campo local y al servidor no le importa. */
+    fun aJsonParaSubir(registros: List<Registro>): String =
+        json.encodeToString(registros.map { RegistroApi(it.semana, it.dia, it.letra, it.peso, it.fecha) })
+
+    /**
+     * Marca como subidos exactamente los que se enviaron (posicion + fecha). Si mientras subia
+     * se anoto algo nuevo, ese queda pendiente para la proxima.
+     */
+    fun marcarSubidos(context: Context, enviados: List<Registro>): List<Registro>? {
+        val enviadas = enviados.map(::huella).toSet()
+        val lista = cargar(context).map { if (huella(it) in enviadas) it.copy(subido = true) else it }
+        return if (guardar(context, lista)) lista else null
+    }
+
+    private fun huella(r: Registro) = "${r.semana}|${r.dia}|${r.letra}|${r.fecha}"
 }

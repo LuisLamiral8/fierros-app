@@ -42,4 +42,8 @@
     <string name="pie_con_plan">kg · último %1$s · plan %2$s</string>
     <string name="pie_sin_plan">kg · último %1$s</string>
     <string name="pie_editando">%1$s · %2$s vs. el último</string>
+    <plurals name="sync_subida_fallida">
+        <item quantity="one">No pude subir tu registro</item>
+        <item quantity="other">No pude subir tus %1$d registros</item>
+    </plurals>
 </resources>

@@ -271,6 +271,8 @@ private fun textoBotonSincronizar(estado: EstadoSincronizacion): String =
 private fun textoResultado(resultado: ResultadoSync): String =
     when (resultado) {
         is ResultadoSync.Ok -> stringResource(R.string.sync_ok)
+        is ResultadoSync.SubidaFallida ->
+            pluralStringResource(R.plurals.sync_subida_fallida, resultado.pendientes, resultado.pendientes)
         ResultadoSync.SinConexion -> stringResource(R.string.sync_sin_conexion)
         ResultadoSync.SinRutinaEnServidor -> stringResource(R.string.sync_sin_rutina)
         is ResultadoSync.ErrorServidor -> stringResource(R.string.sync_error_servidor, resultado.codigo)

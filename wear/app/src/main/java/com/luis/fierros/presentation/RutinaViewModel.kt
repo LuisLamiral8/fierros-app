@@ -7,9 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.luis.fierros.BuildConfig
+import com.luis.fierros.data.ApiFierros
 import com.luis.fierros.data.CargaRutina
 import com.luis.fierros.data.Mesociclo
 import com.luis.fierros.data.Registro
+import com.luis.fierros.data.RespuestaApi
 import com.luis.fierros.data.RegistroRepository
 import com.luis.fierros.data.ResultadoSync
 import com.luis.fierros.data.RutinaRepository
@@ -109,15 +111,37 @@ class RutinaViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    /**
+     * Sincroniza en un orden que importa: **primero sube y despues baja**. Un registro apunta a
+     * una posicion (semana, dia, letra), asi que si se pisara la rutina con una nueva antes de
+     * subir, los registros viejos pasarian a describir otros ejercicios. Si la subida falla, no
+     * se baja nada y no se pierde nada.
+     *
+     * La URL es la de Ajustes -> Servidor, la misma que usa la bajada.
+     */
     fun sincronizar() {
         // Un segundo toque mientras hay una en curso no hace nada.
         if (sincronizacion == EstadoSincronizacion.EnCurso) return
         sincronizacion = EstadoSincronizacion.EnCurso
 
         viewModelScope.launch {
-            val resultado = withContext(Dispatchers.IO) {
-                RutinaRepository.sincronizar(app, ServidorRepository.urlActual(app))
+            val url = withContext(Dispatchers.IO) { ServidorRepository.urlActual(app) }
+
+            val pendientes = RegistroRepository.pendientesDe(registros)
+            if (pendientes.isNotEmpty()) {
+                val subida = withContext(Dispatchers.IO) {
+                    ApiFierros.subirRegistros(url, RegistroRepository.aJsonParaSubir(pendientes))
+                }
+                if (subida !is RespuestaApi.Ok) {
+                    sincronizacion =
+                        EstadoSincronizacion.Terminada(ResultadoSync.SubidaFallida(pendientes.size))
+                    return@launch
+                }
+                withContext(Dispatchers.IO) { RegistroRepository.marcarSubidos(app, pendientes) }
+                    ?.let { registros = it }
             }
+
+            val resultado = withContext(Dispatchers.IO) { RutinaRepository.sincronizar(app, url) }
             if (resultado is ResultadoSync.Ok) carga = CargaRutina.Ok(resultado.mesociclo)
             sincronizacion = EstadoSincronizacion.Terminada(resultado)
         }
