@@ -1,6 +1,8 @@
 # Iteración 3 — Diseño de la app del reloj
 
-**Estado:** en planificación. Este documento es un **brief de diseño**: está
+**Estado:** desarrollo cerrado el 2026-09-14. Ver la sección 14.
+
+Este documento nació como un **brief de diseño**: está
 escrito para que un LLM (o un diseñador) arme las maquetas de la app del reloj
 **completa**, incluyendo lo que ya existe y andando, más lo nuevo de esta
 iteración: **registrar cuánto levanté en cada ejercicio**.
@@ -145,6 +147,10 @@ pantalla, y fondo negro alrededor.
 | Deslizar a la derecha | **Volver atrás** (gesto del sistema) | **No dibujes botones de "volver"**. Y no podés usar deslizamientos horizontales para nada más: te los come el sistema. |
 | Girar la corona | Hacer scroll | Es la forma cómoda de recorrer una lista larga sin taparla con el dedo. Se puede aprovechar para otras cosas. |
 | Tocar | Lo obvio | Área táctil mínima **48 dp**. En un círculo de 192 dp entran, cómodos, unos 3 botones apilados. |
+
+> **Corregido durante la implementación:** el Watch8 40 mm **no tiene corona ni
+> bisel giratorio** —el Classic sí—, así que el renglón de la corona no aplica.
+> Todo se scrollea y se arrastra con el dedo. Ver la sección 14.
 
 **Tamaño de texto:** nada por debajo de ~12 sp. El nombre del ejercicio y el
 peso se leen de reojo: van grandes.
@@ -397,6 +403,9 @@ eso era lo que decía el plan, el registro no sirve.
 
 ## 9. Decisiones que tenés que resolver
 
+> **Ya están resueltas.** Se dejan como se escribieron, porque explican qué se
+> evaluó; lo que se terminó eligiendo está en la sección 14.
+
 No están decididas. **Elegí una opción para cada una, dibujala en las maquetas y
 justificala en `decisiones.md`.** Si se te ocurre algo mejor que las opciones que
 listo, mejor todavía.
@@ -539,3 +548,61 @@ URL del servidor: `192.168.100.240:3000`.
 - **Nada de tema claro.**
 - **Nada de login ni usuarios en el reloj.** Es mi reloj y mi servidor en mi
   casa.
+
+---
+
+## 14. Cierre
+
+**Estado:** desarrollo cerrado el 2026-09-14. Falta probarlo en el reloj real y
+desplegar.
+
+### Qué quedó hecho
+
+- **Registrar el peso** desde la pantalla del ejercicio, uno por ejercicio. Se
+  guarda en el reloj al instante y sin red (`filesDir/registros.json`, escritura
+  atómica). Corregir reemplaza el registro, no agrega otro.
+- **Dos ruedas** para el peso: el entero de 1 en 1 y el decimal de 0,25 en 0,25,
+  cada una en su pista y con la coma fija en el medio. Al pasar de ,75 a ,00 se
+  suma 1 al entero.
+- **Lo último que levanté**, a la vista en la pantalla del ejercicio; y el valor
+  de hoy con un tilde cuando ya registré, tocable para corregir.
+- **Tildes en la lista del día** sobre lo ya registrado.
+- **Aviso de pendientes en Ajustes** ("N registros sin subir"), con "Sincronizar
+  datos" pasando a ser la acción principal.
+- **Subida al servidor**: `POST /api/fierros/registros`, idempotente (reenviar no
+  duplica; si llega un repetido gana el más nuevo por fecha). Sincronizar **sube
+  primero y baja después**; si la subida falla, no se baja nada.
+- **Pantalla de conflicto** cuando la subida falla, diciendo el motivo real —no
+  haber podido conectar, o el código con el que contestó el servidor— con
+  "Reintentar" y "Bajar igual" como salida manual.
+- **Vibración corta** al guardar.
+- De paso, el arreglo de las **reps largas**: "20-12-10" / "-8-6" con la etiqueta
+  "5 SERIES", en vez del "-6" huérfano (sección 10).
+
+### Qué cambió respecto de este brief
+
+- **El Watch8 40 mm no tiene corona ni bisel giratorio.** La sección 4 lo daba
+  por resolver: todo se arrastra con el dedo, y el gesto se toma en toda la
+  pantalla para que el dedo no tape el número.
+- **La rueda pasó de una a dos** (sección 9.1). Con una sola de 0,25, ir de 32,5
+  a 40 eran 30 arrastres; con dos son 8 y el decimal ni se toca. El diseño final
+  está en `assets/diseño-wearos-fierros-v2.html`.
+- **No hay camino para pesos que no son números.** El brief pedía contemplar
+  "peso corporal" o "12 kg c/mano": se decidió que el registro es siempre un
+  número en kg, y qué significa lo sabe quien lo anotó.
+- **El peso del plan desapareció** de la pantalla del ejercicio (sección 8):
+  venía siempre en "0 kg" y ese renglón es justo el espacio que necesitaba el
+  registro. Vuelve a mostrarse solo si alguna vez se carga de verdad.
+- **Las maquetas se replicaron con una unidad de diseño** (`Medidas.kt`): el
+  lienzo de 384 de las maquetas se escala al diámetro real de la pantalla, así
+  las proporciones valen igual en el emulador que en el Watch8.
+
+### Pendiente
+
+- **Probarlo en el reloj real**: la vibración (el emulador no vibra), el acarreo
+  de ,75 → ,00 y los tildes de la lista. Lo demás se verificó en el emulador.
+- **Desplegar** la API y instalar el APK.
+- **Ver lo registrado en formato copiable para Mynter**: no se hizo. La web
+  muestra la columna "Levanté" y el historial del ejercicio, pero volcar un día
+  entero a Mynter sigue siendo a mano.
+- **Cargar el peso del plan de verdad** en el JSON (hoy va en "0 kg").

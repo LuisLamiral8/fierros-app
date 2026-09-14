@@ -97,6 +97,14 @@ en la web, en formato copiable para volcarlo a Mynter.
 El orden de las iteraciones 2 y 3 se invirtió el 2026-09-11: primero la web, para
 tener dónde ver los registros.
 
+**Estado:** desarrollo cerrado el 2026-09-14. Falta probarlo en el reloj y
+desplegar. Cierre en
+[`planificacion-it-3.md`](docs/planificaciones/planificacion-it-3.md#14-cierre).
+
+**Diseño:** [`planificacion-it-3.md`](docs/planificaciones/planificacion-it-3.md)
+(brief para diseñar las maquetas; el resultado es
+`assets/diseño-wearos-fierros-v2.html`).
+
 ### Después (sin compromiso)
 
 - Timer de descanso con vibración.
@@ -240,17 +248,25 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
       `TZ=America/Argentina/Buenos_Aires`. El `docker-compose.yml` no lo define y
       sin eso las horas del log y del historial salen en UTC.
 
-### Iteración 3 — Registrar
+### Iteración 3 — Registrar (desarrollo cerrado el 2026-09-14)
 
-- [ ] Registrar el peso levantado, uno por ejercicio.
-- [ ] Empezar a cargar el peso real en el JSON (hoy va en "0 kg").
-- [ ] Sincronizar los registros a la API.
-- [ ] Definir qué pasa al sincronizar la rutina si hay registros sin subir.
-- [ ] Ver lo registrado en la web, en formato copiable para volcar a Mynter.
-- [ ] Mejorar cómo se ven las series × reps largas en la pantalla de ejercicio:
-      hoy "5 × 20-12-10-8-6" se corta en "20-12-10-8 / -6". Ya se probó
-      achicar la letra automáticamente para que entre en un renglón, y se
-      descartó porque no gustó.
+- [x] Registrar el peso levantado, uno por ejercicio, con dos ruedas (entero y
+      decimal de 0,25).
+- [x] Guardarlo en el reloj al instante y sin red, con corrección que reemplaza.
+- [x] Ver lo último levantado en la pantalla del ejercicio, y tildes en la lista
+      del día sobre lo ya registrado.
+- [x] Sincronizar los registros a la API (`POST /api/fierros/registros`).
+- [x] Definir qué pasa al sincronizar si hay registros sin subir: sube primero y
+      baja después; si la subida falla no baja nada y lo explica en una pantalla
+      de conflicto, diciendo el motivo real.
+- [x] Avisar en Ajustes cuántos registros faltan subir.
+- [x] Mejorar cómo se ven las series × reps largas en la pantalla de ejercicio.
+- [ ] Probarlo en el reloj: la vibración al guardar, el acarreo de ,75 → ,00 y
+      los tildes de la lista. El emulador no alcanza para eso.
+- [ ] Desplegar: `git pull` y `docker compose up -d --build` en el homelab, e
+      instalar el APK en el reloj.
+- [ ] Ver lo registrado en la web en formato copiable para volcar a Mynter.
+- [ ] Empezar a cargar el peso real del plan en el JSON (hoy va en "0 kg").
 
 ### Posibles mejoras (sin compromiso)
 
@@ -272,4 +288,6 @@ selector de dispositivos y darle **Run ▶**. Hace los pasos 3 a 5 solo.
 - **Estado:** iteración 1 con el desarrollo cerrado (2026-09-11): instalada en el
   reloj y sincronizando con la API. En validación: dos semanas de uso real en el
   gimnasio. Iteración 2 (la web) cerrada el 2026-09-11: desplegada en el homelab,
-  con el reloj sincronizando por `/api/fierros/rutina`.
+  con el reloj sincronizando por `/api/fierros/rutina`. Iteración 3 (registrar)
+  con el desarrollo cerrado el 2026-09-14: falta probarla en el reloj y
+  desplegarla.
