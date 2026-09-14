@@ -12,6 +12,12 @@
     <string name="ultimo">último</string>
     <string name="registrar">Registrar</string>
     <string name="guardar">Guardar</string>
+    <string name="hoy">hoy</string>
+    <string name="ultimo_corregir">último: %1$s · tocá para corregir</string>
+    <string name="ultimo_y_plan">último %1$s · plan %2$s</string>
+    <string name="ultimo_suelto">último %1$s</string>
+    <string name="vs_ultimo">%1$s vs. el último</string>
+    <string name="kilos">kg</string>
     <string name="ajustes">Ajustes</string>
     <string name="servidor">Servidor</string>
     <string name="cambiar">Cambiar</string>

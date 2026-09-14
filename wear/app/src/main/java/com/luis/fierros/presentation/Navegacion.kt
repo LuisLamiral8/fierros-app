@@ -25,6 +25,7 @@ import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.luis.fierros.R
 import com.luis.fierros.data.CargaRutina
 import com.luis.fierros.data.ResultadoSync
+import com.luis.fierros.data.kilosDe
 import com.luis.fierros.presentation.theme.FierrosTheme
 import kotlinx.coroutines.delay
 
@@ -187,20 +188,57 @@ private fun Navegacion(viewModel: RutinaViewModel) {
         // Las flechas cambian de ejercicio dentro de esta misma pantalla, sin apilar rutas:
         // deslizar atrás siempre vuelve a la lista del día. Nunca pasan a otro día.
         composable("ejercicio/{semana}/{dia}/{indice}") { entry ->
-            val ejercicios = viewModel.rutina?.semana(entry.int("semana"))?.dia(entry.int("dia"))?.ejercicios
+            val nroSemana = entry.int("semana")
+            val nroDia = entry.int("dia")
+            val ejercicios = viewModel.rutina?.semana(nroSemana)?.dia(nroDia)?.ejercicios
             val inicial = entry.int("indice")
-            if (ejercicios == null || inicial == null || inicial !in ejercicios.indices) {
+            if (nroSemana == null || nroDia == null || ejercicios == null ||
+                inicial == null || inicial !in ejercicios.indices
+            ) {
                 NoEncontrado()
             } else {
                 var indice by rememberSaveable { mutableIntStateOf(inicial) }
                 // key: al cambiar de ejercicio la pantalla arranca de cero (scroll arriba).
                 key(indice) {
+                    val letra = ejercicios[indice].letra
                     PantallaEjercicio(
                         ejercicio = ejercicios[indice],
+                        ultimo = viewModel.ultimoDe(nroSemana, nroDia, letra),
+                        registradoHoy = viewModel.registradoEn(nroSemana, nroDia, letra),
+                        onRegistrar = {
+                            navController.navigate("registrar/$nroSemana/$nroDia/$indice")
+                        },
                         onAnterior = if (indice > 0) ({ indice -= 1 }) else null,
                         onSiguiente = if (indice < ejercicios.lastIndex) ({ indice += 1 }) else null,
                     )
                 }
+            }
+        }
+
+        // La rueda para anotar el peso. Guarda y vuelve al ejercicio.
+        composable("registrar/{semana}/{dia}/{indice}") { entry ->
+            val nroSemana = entry.int("semana")
+            val nroDia = entry.int("dia")
+            val ejercicios = viewModel.rutina?.semana(nroSemana)?.dia(nroDia)?.ejercicios
+            val indice = entry.int("indice")
+            if (nroSemana == null || nroDia == null || ejercicios == null ||
+                indice == null || indice !in ejercicios.indices
+            ) {
+                NoEncontrado()
+            } else {
+                val ejercicio = ejercicios[indice]
+                PantallaRegistrar(
+                    titulo = "${ejercicio.letra} · ${ejercicio.nombre}",
+                    kilosIniciales = viewModel.kilosIniciales(nroSemana, nroDia, ejercicio.letra),
+                    ultimo = viewModel.ultimoDe(nroSemana, nroDia, ejercicio.letra),
+                    // El peso del plan viene siempre en "0 kg": solo se muestra si alguna vez
+                    // se carga de verdad.
+                    plan = ejercicio.peso.takeIf { (kilosDe(it) ?: 0.0) > 0.0 },
+                    onGuardar = { kilos ->
+                        viewModel.registrar(nroSemana, nroDia, ejercicio.letra, kilos)
+                        navController.popBackStack()
+                    },
+                )
             }
         }
     }

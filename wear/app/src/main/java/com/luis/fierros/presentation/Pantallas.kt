@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -288,6 +290,8 @@ fun PastillaUltimo(peso: String, modifier: Modifier = Modifier) {
 fun PantallaEjercicio(
     ejercicio: Ejercicio,
     ultimo: String? = null,
+    registradoHoy: String? = null,
+    onRegistrar: (() -> Unit)? = null,
     onAnterior: (() -> Unit)? = null,
     onSiguiente: (() -> Unit)? = null,
 ) {
@@ -302,7 +306,7 @@ fun PantallaEjercicio(
                     .verticalScroll(rememberScrollState())
                     .heightIn(min = alto)
                     // Márgenes laterales propios para que el texto no quede bajo las flechas.
-                    .padding(horizontal = du(if (largo) 58f else 62f)),
+                    .padding(horizontal = du(if (largo || registradoHoy != null) 58f else 62f)),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(du(if (largo) 7f else 10f), Alignment.CenterVertically),
             ) {
@@ -360,7 +364,64 @@ fun PantallaEjercicio(
                         textAlign = TextAlign.Center,
                     )
                 }
-                if (ultimo != null) PastillaUltimo(ultimo, Modifier.padding(top = du(2f)))
+                if (registradoHoy != null) {
+                    // Ya registrado. El valor de hoy se distingue por el tilde y el borde, no
+                    // solo por el color; tocarlo vuelve a la rueda para corregirlo.
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                                RoundedCornerShape(50),
+                            )
+                            .border(du(1f), MaterialTheme.colorScheme.primary, RoundedCornerShape(50))
+                            .then(
+                                if (onRegistrar == null) Modifier
+                                else Modifier.clickable(onClick = onRegistrar),
+                            )
+                            .padding(horizontal = du(16f), vertical = du(8f)),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(du(16f)),
+                        )
+                        Spacer(Modifier.width(du(9f)))
+                        Text(registradoHoy, fontSize = duSp(20f), fontWeight = FontWeight.Medium)
+                        Spacer(Modifier.width(du(9f)))
+                        Text(
+                            text = stringResource(R.string.hoy),
+                            fontSize = duSp(15f),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    if (ultimo != null) {
+                        Text(
+                            text = stringResource(R.string.ultimo_corregir, ultimo),
+                            fontSize = duSp(15f),
+                            lineHeight = duSp(18f),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+                } else {
+                    if (ultimo != null) PastillaUltimo(ultimo)
+                    if (onRegistrar != null) {
+                        Button(
+                            onClick = onRegistrar,
+                            modifier = Modifier.heightIn(min = du(48f)),
+                            shape = RoundedCornerShape(50),
+                            contentPadding = PaddingValues(horizontal = du(28f), vertical = du(4f)),
+                        ) {
+                            Text(
+                                text = stringResource(R.string.registrar),
+                                fontSize = duSp(17f),
+                                fontWeight = FontWeight.Medium,
+                            )
+                        }
+                    }
+                }
             }
 
             onAnterior?.let {

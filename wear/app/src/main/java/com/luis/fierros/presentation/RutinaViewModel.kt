@@ -9,12 +9,21 @@ import androidx.lifecycle.viewModelScope
 import com.luis.fierros.BuildConfig
 import com.luis.fierros.data.CargaRutina
 import com.luis.fierros.data.Mesociclo
+import com.luis.fierros.data.Registro
+import com.luis.fierros.data.RegistroRepository
 import com.luis.fierros.data.ResultadoSync
 import com.luis.fierros.data.RutinaRepository
 import com.luis.fierros.data.ServidorRepository
+import com.luis.fierros.data.kilosDe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+/**
+ * Con cuántos kilos abre la rueda la primera vez, cuando el ejercicio todavía no tiene ningún
+ * registro del cual partir.
+ */
+private const val KILOS_POR_DEFECTO = 20.0
 
 sealed interface EstadoSincronizacion {
     data object Inactiva : EstadoSincronizacion
@@ -37,6 +46,41 @@ class RutinaViewModel(application: Application) : AndroidViewModel(application) 
     val rutina: Mesociclo?
         get() = (carga as? CargaRutina.Ok)?.mesociclo
 
+    /** Lo levantado. Se guarda en el reloj al instante y sube al servidor al sincronizar. */
+    var registros by mutableStateOf<List<Registro>>(emptyList())
+        private set
+
+    /** Cuántos registros faltan subir. Ajustes lo muestra para que no se junten sin que me entere. */
+    val pendientes: Int
+        get() = RegistroRepository.pendientes(registros)
+
+    /** Lo que levanté la vez pasada en este ejercicio ("32,5 kg"), o null si es la primera. */
+    fun ultimoDe(semana: Int, dia: Int, letra: String): String? =
+        RegistroRepository.ultimo(registros, semana, dia, letra)?.peso
+
+    /** Lo que ya anoté en este ejercicio de esta semana, o null si todavía no lo hice. */
+    fun registradoEn(semana: Int, dia: Int, letra: String): String? =
+        RegistroRepository.deEsta(registros, semana, dia, letra)?.peso
+
+    /**
+     * Con cuántos kilos abre la rueda: lo de hoy si ya anoté, si no lo de la vez pasada, y si no
+     * hay nada, [KILOS_POR_DEFECTO]. Así lo más común —repetir o subir un escalón— es un toque.
+     */
+    fun kilosIniciales(semana: Int, dia: Int, letra: String): Double {
+        val referencia = registradoEn(semana, dia, letra) ?: ultimoDe(semana, dia, letra)
+        return referencia?.let { kilosDe(it) } ?: KILOS_POR_DEFECTO
+    }
+
+    /** Anota el peso y lo guarda en el acto, sin red. Corregir reemplaza, no agrega. */
+    fun registrar(semana: Int, dia: Int, letra: String, kilos: Double) {
+        viewModelScope.launch {
+            val nueva = withContext(Dispatchers.IO) {
+                RegistroRepository.registrar(app, semana, dia, letra, kilos)
+            }
+            if (nueva != null) registros = nueva
+        }
+    }
+
     var sincronizacion by mutableStateOf<EstadoSincronizacion>(EstadoSincronizacion.Inactiva)
         private set
 
@@ -54,6 +98,9 @@ class RutinaViewModel(application: Application) : AndroidViewModel(application) 
     init {
         viewModelScope.launch {
             carga = withContext(Dispatchers.IO) { RutinaRepository.cargar(app) }
+        }
+        viewModelScope.launch {
+            registros = withContext(Dispatchers.IO) { RegistroRepository.cargar(app) }
         }
         viewModelScope.launch {
             ServidorRepository.urlGuardada(app).collect { guardada ->
